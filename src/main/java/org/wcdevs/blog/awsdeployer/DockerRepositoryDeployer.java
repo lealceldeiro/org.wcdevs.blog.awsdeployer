@@ -2,7 +2,7 @@ package org.wcdevs.blog.awsdeployer;
 
 import static org.wcdevs.blog.awsdeployer.Util.environmentFrom;
 import static org.wcdevs.blog.awsdeployer.Util.getValueInApp;
-import static org.wcdevs.blog.awsdeployer.Util.string;
+
 import org.wcdevs.blog.cdk.DockerRepository;
 import software.amazon.awscdk.core.App;
 import software.amazon.awscdk.core.CfnOutput;
@@ -20,19 +20,19 @@ public class DockerRepositoryDeployer {
     String applicationName = getValueInApp("applicationName", app);
 
     StackProps stackProps = StackProps.builder()
-                                      .stackName(string("-", applicationName, NAME))
+                                      .stackName(Util.joinedString("-", applicationName, NAME))
                                       .env(environmentFrom(accountId, region))
                                       .build();
-    Stack dockerRepositoryStack = new Stack(app, string(NAME, "Stack"), stackProps);
+    Stack dockerRepositoryStack = new Stack(app, Util.string(NAME, "Stack"), stackProps);
     DockerRepository.InputParameter inputParameter
-        = new DockerRepository.InputParameter(string("-", applicationName, NAME), accountId);
+        = new DockerRepository.InputParameter(Util.joinedString("-", applicationName, NAME), accountId);
 
     DockerRepository dockerRepository =
         DockerRepository.newInstance(dockerRepositoryStack, NAME, inputParameter);
 
     String cfnOutput = "OUTPUT";
-    CfnOutput.Builder.create(dockerRepository, string(NAME, cfnOutput))
-                     .exportName(string("-", NAME, cfnOutput))
+    CfnOutput.Builder.create(dockerRepository, Util.string(NAME, cfnOutput))
+                     .exportName(Util.joinedString("-", NAME, cfnOutput))
                      .value(cfnOutput)
                      .build();
     app.synth();

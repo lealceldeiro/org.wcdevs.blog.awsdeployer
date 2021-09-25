@@ -32,10 +32,10 @@ final class Util {
   }
 
   static String string(Object... values) {
-    return string("", values);
+    return joinedString("", values);
   }
 
-  static String string(String joiner, Object... values) {
+  static String joinedString(String joiner, Object... values) {
     return Arrays.stream(values)
                  .filter(Objects::nonNull)
                  .map(Object::toString)

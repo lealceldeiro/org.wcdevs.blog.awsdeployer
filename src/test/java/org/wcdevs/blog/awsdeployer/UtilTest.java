@@ -3,18 +3,12 @@ package org.wcdevs.blog.awsdeployer;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import software.amazon.awscdk.core.App;
-import software.amazon.awscdk.core.ConstructNode;
 import software.amazon.awscdk.core.Environment;
-import software.amazon.jsii.JsiiEngine;
-import software.amazon.jsii.JsiiObject;
-import software.amazon.jsii.Kernel;
 
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
@@ -62,9 +56,18 @@ class UtilTest {
 
   @Test
   void string() {
+    String s1 = randomString(), s2 = randomString();
+    assertEquals(s1 + s2, Util.string(s1, s2));
   }
 
   @Test
-  void testString() {
+  void stringFromNull() {
+    assertEquals("", Util.string(null, null, null));
+  }
+
+  @Test
+  void joinedString() {
+    String s1 = randomString(), s2 = randomString(), joiner = randomString();
+    assertEquals(s1 + joiner + s2, Util.joinedString(joiner, s1, s2));
   }
 }
