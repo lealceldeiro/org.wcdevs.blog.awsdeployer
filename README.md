@@ -1,4 +1,7 @@
 # org.wcdevs.blog.awsdeployer
+
+[![CodeQL](https://github.com/lealceldeiro/org.wcdevs.blog.awsdeployer/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/lealceldeiro/org.wcdevs.blog.awsdeployer/actions/workflows/codeql-analysis.yml)
+
 Holds the CDK applications and stack that uses CDK constructs to deploy resources [blog.wcdevs.org](https://blog.wcdevs.org)
 
 This is a [Maven](https://maven.apache.org/) based project, so you can open this project with any Maven compatible Java
