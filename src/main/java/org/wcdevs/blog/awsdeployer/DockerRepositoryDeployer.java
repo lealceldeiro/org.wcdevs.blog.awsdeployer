@@ -1,13 +1,13 @@
 package org.wcdevs.blog.awsdeployer;
 
-import static org.wcdevs.blog.awsdeployer.Util.environmentFrom;
-import static org.wcdevs.blog.awsdeployer.Util.getValueInApp;
-
 import org.wcdevs.blog.cdk.DockerRepository;
 import software.amazon.awscdk.core.App;
 import software.amazon.awscdk.core.CfnOutput;
 import software.amazon.awscdk.core.Stack;
 import software.amazon.awscdk.core.StackProps;
+
+import static org.wcdevs.blog.awsdeployer.Util.environmentFrom;
+import static org.wcdevs.blog.awsdeployer.Util.getValueInApp;
 
 public class DockerRepositoryDeployer {
   private static final String NAME = "DockerRepository";
