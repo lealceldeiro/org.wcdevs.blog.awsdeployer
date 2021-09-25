@@ -11,10 +11,10 @@
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <cdk.version>1.122.0</cdk.version>
-    <junit.version>5.7.0</junit.version>
+    <cdk.version>1.124.0</cdk.version>
+    <junit.version>5.8.0</junit.version>
     <passay.version>1.6.1</passay.version>
-    <cdk-constructs.version>0.0.1-SNAPSHOT</cdk-constructs.version>
+    <cdk-constructs.version>0.0.4</cdk-constructs.version>
   </properties>
 
   <build>
@@ -28,7 +28,7 @@
   </build>
 
   <dependencies>
-    <!-- AWS Cloud Development Kit -->
+    <!-- region AWS Cloud Development Kit -->
     <dependency>
       <groupId>software.amazon.awscdk</groupId>
       <artifactId>core</artifactId>
@@ -94,11 +94,13 @@
       <artifactId>route53</artifactId>
       <version>${cdk.version}</version>
     </dependency>
+
     <dependency>
       <groupId>software.amazon.awscdk</groupId>
       <artifactId>route53-targets</artifactId>
       <version>${cdk.version}</version>
     </dependency>
+
     <dependency>
       <groupId>software.amazon.awscdk</groupId>
       <artifactId>elasticloadbalancingv2</artifactId>
@@ -110,6 +112,7 @@
       <artifactId>certificatemanager</artifactId>
       <version>${cdk.version}</version>
     </dependency>
+    <!--endregion-->
 
     <dependency>
       <groupId>org.passay</groupId>
