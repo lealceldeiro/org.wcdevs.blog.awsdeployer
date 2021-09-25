@@ -25,7 +25,10 @@ final class Util {
   }
 
   static Environment environmentFrom(String accountId, String region) {
-    return Environment.builder().account(accountId).region(region).build();
+    return Environment.builder()
+                      .account(Objects.requireNonNull(accountId))
+                      .region(Objects.requireNonNull(region))
+                      .build();
   }
 
   static String string(Object... values) {
