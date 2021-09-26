@@ -6,7 +6,7 @@
     "aws-sdk": "2.995.0"
   },
   "scripts": {
-    "repository:deploy": "cdk deploy --app \"./mvnw -e -q compile exec:java -Dexec.mainClass=org.wcdevs.blog.awsdeployer.DockerRepositoryDeployer\" -c applicationName=org.wcdevs.blog.core -c accountId=000000000000 -c region=eu-central-1 --require-approval never",
-    "repository:destroy": "cdk destroy --app \"./mvnw -e -q compile exec:java -Dexec.mainClass=org.wcdevs.blog.awsdeployer.DockerRepositoryDeployer\" -c applicationName=org.wcdevs.blog.core -c accountId=000000000000 -c region=eu-central-1 --require-approval never"
+    "repository:deploy": "cdk deploy --app \"./mvnw -e -q compile exec:java -Dexec.mainClass=org.wcdevs.blog.awsdeployer.DockerRepositoryDeployer\" -c applicationName=orgwcdevsblogcore -c accountId=000000000000 -c region=eu-central-1 --require-approval never",
+    "repository:destroy": "cdk destroy --app \"./mvnw -e -q compile exec:java -Dexec.mainClass=org.wcdevs.blog.awsdeployer.DockerRepositoryDeployer\" -c applicationName=orgwcdevsblogcore -c accountId=000000000000 -c region=eu-central-1 --require-approval never"
   }
 }
