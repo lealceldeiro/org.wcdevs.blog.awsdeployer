@@ -2,6 +2,11 @@ name: "CodeQL"
 
 on:
   push:
+    paths:
+      - 'src/**'
+      - 'pom.xml'
+      - 'package.json'
+      - '.github/workflows/**'
   pull_request:
   schedule:
     - cron: '30 8 * * 1'
