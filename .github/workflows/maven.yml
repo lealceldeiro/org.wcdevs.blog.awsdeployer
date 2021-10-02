@@ -9,6 +9,7 @@ on:
     paths:
       - 'src/**'
       - 'pom.xml'
+      - 'cdk.json'
       - 'package.json'
       - '.github/workflows/**'
 
