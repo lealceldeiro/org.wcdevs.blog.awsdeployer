@@ -17,3 +17,24 @@ The `cdk.json` file tells the CDK Toolkit how to execute your app.
 * `cdk deploy`      deploy this stack to your default AWS account/region
 * `cdk diff`        compare deployed stack with current state
 * `cdk docs`        open CDK documentation
+
+## Command examples
+
+These commands represent examples of real ones that can be used to deploy to AWS from a local
+environment to troubleshoot the deployers.
+
+The values `000000000000` and `eu-central-1` should be replaced for the real AWS account id
+and region. In each case, to undeploy/destroy the resource, `<resource>:destroy` should be used,
+where `<resource>` is the name of the resource deployed (i.e.: `repository`, `network`).
+
+The full list of scripts can be seen in the [package.json](./package.json) file.
+
+* Deploy a docker repository:
+```shell
+npm run repository:deploy -- -c accountId=000000000000 -c region="eu-central-1"
+```
+
+* Deploy a network stack:
+```shell
+npm run network:deploy -- -c accountId=000000000000 -c region="eu-central-1" -c environmentName="staging"
+```
