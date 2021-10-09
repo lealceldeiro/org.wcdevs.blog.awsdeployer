@@ -47,6 +47,6 @@ final class Util {
   }
 
   static boolean notEmpty(String value) {
-    return value != null && !value.isEmpty();
+    return value != null && !value.isEmpty() && !value.equals("null");
   }
 }

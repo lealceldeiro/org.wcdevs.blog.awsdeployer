@@ -87,4 +87,9 @@ class UtilTest {
   void notEmptyReturnsFalseForNull() {
     assertFalse(Util.notEmpty(null));
   }
+
+  @Test
+  void notEmptyReturnsFalseForNullString() {
+    assertFalse(Util.notEmpty("null"));
+  }
 }
