@@ -45,4 +45,8 @@ final class Util {
                  .map(Object::toString)
                  .collect(Collectors.joining(joiner));
   }
+
+  static boolean notEmpty(String value) {
+    return value != null && !value.isEmpty();
+  }
 }

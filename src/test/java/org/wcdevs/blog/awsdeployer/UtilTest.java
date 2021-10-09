@@ -8,7 +8,9 @@ import software.amazon.awscdk.core.Environment;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
@@ -69,5 +71,20 @@ class UtilTest {
   void joinedString() {
     String s1 = randomString(), s2 = randomString(), joiner = randomString();
     assertEquals(s1 + joiner + s2, Util.joinedString(joiner, s1, s2));
+  }
+
+  @Test
+  void notEmptyReturnsTrueForNotEmptyString() {
+    assertTrue(Util.notEmpty(randomString()));
+  }
+
+  @Test
+  void notEmptyReturnsFalseForEmptyString() {
+    assertFalse(Util.notEmpty(""));
+  }
+
+  @Test
+  void notEmptyReturnsFalseForNull() {
+    assertFalse(Util.notEmpty(null));
   }
 }
