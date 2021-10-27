@@ -11,7 +11,7 @@
     "repository:destroy": "cdk destroy --app \"./mvnw -e -q compile exec:java -Dexec.mainClass=org.wcdevs.blog.awsdeployer.DockerRepositoryDeployer\" -c applicationName=orgwcdevsblogcore -c accountId=000000000000 -c region=eu-central-1 --require-approval never",
     "network:deploy": "cdk deploy --app \"./mvnw -e -q compile exec:java -Dexec.mainClass=org.wcdevs.blog.awsdeployer.NetworkDeployer\" -c sslCertificateArn=null -c environmentName=${ENVIRONMENT_NAME} -c accountId=000000000000 -c region=eu-central-1 --require-approval never",
     "network:destroy": "cdk destroy --app \"./mvnw -e -q compile exec:java -Dexec.mainClass=org.wcdevs.blog.awsdeployer.NetworkDeployer\" -c sslCertificateArn=null -c environmentName=${ENVIRONMENT_NAME} -c accountId=000000000000 -c region=eu-central-1 --force --require-approval never",
-    "database:deploy": "cdk deploy --app \"./mvnw -e -q compile exec:java -Dexec.mainClass=org.wcdevs.blog.awsdeployer.PostgreSqlDeployer\" -c applicationName=orgwcdevsblogcore -c accountId=000000000000 -c region=eu-central-1 --require-approval never",
-    "database:destroy": "cdk destroy --app \"./mvnw -e -q compile exec:java -Dexec.mainClass=org.wcdevs.blog.awsdeployer.PostgreSqlDeployer\" -c applicationName=orgwcdevsblogcore -c accountId=000000000000 -c region=eu-central-1 --force --require-approval never"
+    "database:deploy": "cdk deploy --app \"./mvnw -e -q compile exec:java -Dexec.mainClass=org.wcdevs.blog.awsdeployer.DatabaseDeployer\" -c applicationName=orgwcdevsblogcore -c accountId=000000000000 -c region=eu-central-1 --require-approval never",
+    "database:destroy": "cdk destroy --app \"./mvnw -e -q compile exec:java -Dexec.mainClass=org.wcdevs.blog.awsdeployer.DatabaseDeployer\" -c applicationName=orgwcdevsblogcore -c accountId=000000000000 -c region=eu-central-1 --force --require-approval never"
   }
 }

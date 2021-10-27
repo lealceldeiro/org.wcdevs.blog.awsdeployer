@@ -6,8 +6,8 @@ import software.amazon.awscdk.core.App;
 import software.amazon.awscdk.core.Stack;
 import software.amazon.awscdk.core.StackProps;
 
-public class PostgreSqlDeployer {
-  private static final String PG_DATABASE = "PostgreSQLDatabase";
+public class DatabaseDeployer {
+  private static final String DATABASE_NAME = "DatabaseDeployer";
 
   public static void main(String[] args) {
     App app = new App();
@@ -20,13 +20,13 @@ public class PostgreSqlDeployer {
     var awsEnvironment = Util.environmentFrom(accountId, region);
     var applicationEnvironment = new ApplicationEnvironment(applicationName, environmentName);
     var stackProps = StackProps.builder()
-                             .stackName(applicationEnvironment.prefixed(PG_DATABASE))
+                             .stackName(applicationEnvironment.prefixed(DATABASE_NAME))
                              .env(awsEnvironment)
                              .build();
     var databaseStack = new Stack(app, "DatabaseStack", stackProps);
     var inputParameters = PostgreSQL.newInputParameters();
 
-    PostgreSQL.newInstance(databaseStack, PG_DATABASE, applicationEnvironment, inputParameters);
+    PostgreSQL.newInstance(databaseStack, DATABASE_NAME, applicationEnvironment, inputParameters);
 
     app.synth();
   }
