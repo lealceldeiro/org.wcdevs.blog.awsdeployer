@@ -1,5 +1,5 @@
-# Creates all environment-specific resources that are shared across applications, and it needs to
-# run before creating any application-specific environment.
+# # One-off run. Environment-specific resources
+# - Create network
 name: 1 - Manually create a shared environment
 
 on:
