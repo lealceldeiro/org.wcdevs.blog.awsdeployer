@@ -15,17 +15,14 @@ public class NetworkDeployer {
     String accountId = Util.getValueInApp("accountId", app);
     String region = Util.getValueInApp("region", app);
     String sslCertificate = Util.getValueInApp("sslCertificate", app, false);
-
-    var inputParameters = Util.notEmpty(sslCertificate)
-                          ? Network.newInputParameters(sslCertificate)
-                          : Network.newInputParameters();
     var stackProps = StackProps.builder()
                                .stackName(Util.joinedString("-", environmentName, NAME))
                                .env(Util.environmentFrom(accountId, region))
                                .build();
     var stack = new Stack(app, "NetworkStack", stackProps);
 
-    Network.newInstance(stack, NAME, environmentName, inputParameters);
+    var inputParams = Network.InputParameters.builder().sslCertificateArn(sslCertificate).build();
+    Network.newInstance(stack, NAME, environmentName, inputParams);
 
     app.synth();
   }
