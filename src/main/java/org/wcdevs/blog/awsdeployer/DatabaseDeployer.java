@@ -1,7 +1,7 @@
 package org.wcdevs.blog.awsdeployer;
 
 import org.wcdevs.blog.cdk.ApplicationEnvironment;
-import org.wcdevs.blog.cdk.PostgreSQL;
+import org.wcdevs.blog.cdk.Database;
 import software.amazon.awscdk.core.App;
 import software.amazon.awscdk.core.Stack;
 import software.amazon.awscdk.core.StackProps;
@@ -20,13 +20,13 @@ public class DatabaseDeployer {
     var awsEnvironment = Util.environmentFrom(accountId, region);
     var applicationEnvironment = new ApplicationEnvironment(applicationName, environmentName);
     var stackProps = StackProps.builder()
-                             .stackName(applicationEnvironment.prefixed(DATABASE_NAME))
-                             .env(awsEnvironment)
-                             .build();
+                               .stackName(applicationEnvironment.prefixed(DATABASE_NAME))
+                               .env(awsEnvironment)
+                               .build();
     var databaseStack = new Stack(app, "DatabaseStack", stackProps);
-    var inputParameters = PostgreSQL.newInputParameters();
+    var inputParameters = Database.newInputParameters();
 
-    PostgreSQL.newInstance(databaseStack, DATABASE_NAME, applicationEnvironment, inputParameters);
+    Database.newInstance(databaseStack, DATABASE_NAME, applicationEnvironment, inputParameters);
 
     app.synth();
   }

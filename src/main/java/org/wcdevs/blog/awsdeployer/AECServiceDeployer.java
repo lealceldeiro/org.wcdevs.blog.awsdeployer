@@ -2,8 +2,8 @@ package org.wcdevs.blog.awsdeployer;
 
 import org.wcdevs.blog.cdk.AECService;
 import org.wcdevs.blog.cdk.ApplicationEnvironment;
+import org.wcdevs.blog.cdk.Database;
 import org.wcdevs.blog.cdk.Network;
-import org.wcdevs.blog.cdk.PostgreSQL;
 import software.amazon.awscdk.core.App;
 import software.amazon.awscdk.core.Construct;
 import software.amazon.awscdk.core.Environment;
@@ -39,8 +39,8 @@ public class AECServiceDeployer {
     var dockerImage = AECService.newDockerImage(dockerRepositoryName, dockerImageTag,
                                                 dockerImageUrl);
 
-    var dbOutputParameters = PostgreSQL.outputParametersFrom(parametersStack,
-                                                             applicationEnvironment);
+    var dbOutputParameters = Database.outputParametersFrom(parametersStack,
+                                                           applicationEnvironment);
 
     var environmentVariables = environmentVariables(serviceStack, springProfile, environmentName,
                                                     dbOutputParameters);
@@ -80,20 +80,20 @@ public class AECServiceDeployer {
                                                     .build());
   }
 
-  private static List<String> secGroupIdAccessFromEcs(PostgreSQL.OutputParameters dbOutput) {
+  private static List<String> secGroupIdAccessFromEcs(Database.OutputParameters dbOutput) {
     return List.of(dbOutput.getDbSecurityGroupId());
   }
 
   private static Map<String, String> environmentVariables(Construct scope, String springProfile,
                                                           String environmentName,
-                                                          PostgreSQL.OutputParameters dbOutput) {
+                                                          Database.OutputParameters dbOutput) {
     var dbEndpointAddress = dbOutput.getEndpointAddress();
     var dbEndpointPort = dbOutput.getEndpointPort();
     var dbName = dbOutput.getDbName();
     var springDataSourceUrl = String.format("jdbc:postgresql://%s:%s/%s",
                                             dbEndpointAddress, dbEndpointPort, dbName);
-    var dbUsername = PostgreSQL.getDataBaseUsernameFromSecret(scope, dbOutput);
-    var dbPassword = PostgreSQL.getDataBasePasswordFromSecret(scope, dbOutput);
+    var dbUsername = Database.getDataBaseUsernameFromSecret(scope, dbOutput);
+    var dbPassword = Database.getDataBasePasswordFromSecret(scope, dbOutput);
 
     return Map.of("SPRING_PROFILES_ACTIVE", springProfile,
                   "SPRING_DATASOURCE_URL", springDataSourceUrl,
