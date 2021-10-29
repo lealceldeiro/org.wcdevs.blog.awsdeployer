@@ -1,10 +1,11 @@
 package org.wcdevs.blog.awsdeployer;
 
 import org.wcdevs.blog.cdk.DeploymentSequencerStack;
+import org.wcdevs.blog.cdk.Util;
 import software.amazon.awscdk.core.App;
 
 public class DeploymentSequencerDeployer {
-  private static final String NAME = "sequencerStack";
+  private static final String CONSTRUCT_NAME = "DeploymentSequencerStack";
 
   public static void main(String[] args) {
     App app = new App();
@@ -20,7 +21,8 @@ public class DeploymentSequencerDeployer {
         .codeDirectory("./deployment-sequencer-lambda/dist/lambda.zip")
         .githubToken(githubToken)
         .build();
-    DeploymentSequencerStack.newInstance(app, NAME, awsEnvironment, applicationName, inputParams);
+    DeploymentSequencerStack.newInstance(app, CONSTRUCT_NAME, awsEnvironment, applicationName,
+                                         inputParams);
 
     app.synth();
   }

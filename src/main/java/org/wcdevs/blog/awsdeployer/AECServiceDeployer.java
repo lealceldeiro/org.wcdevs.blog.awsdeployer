@@ -4,6 +4,7 @@ import org.wcdevs.blog.cdk.AECService;
 import org.wcdevs.blog.cdk.ApplicationEnvironment;
 import org.wcdevs.blog.cdk.Database;
 import org.wcdevs.blog.cdk.Network;
+import org.wcdevs.blog.cdk.Util;
 import software.amazon.awscdk.core.App;
 import software.amazon.awscdk.core.Construct;
 import software.amazon.awscdk.core.Environment;
@@ -18,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 
 public class AECServiceDeployer {
+  private static final String CONSTRUCT_NAME = "AECService";
+
   public static void main(String[] args) {
     var app = new App();
 
@@ -50,7 +53,7 @@ public class AECServiceDeployer {
 
     var networkOutputParameters = Network.outputParametersFrom(serviceStack, environmentName);
 
-    AECService.newInstance(serviceStack, "AECService", awsEnvironment, applicationEnvironment,
+    AECService.newInstance(serviceStack, CONSTRUCT_NAME, awsEnvironment, applicationEnvironment,
                            inputParameters, networkOutputParameters);
 
     app.synth();

@@ -1,33 +1,31 @@
 package org.wcdevs.blog.awsdeployer;
 
 import org.wcdevs.blog.cdk.DockerRepository;
+import org.wcdevs.blog.cdk.Util;
 import software.amazon.awscdk.core.App;
 import software.amazon.awscdk.core.Stack;
 import software.amazon.awscdk.core.StackProps;
 
-import static org.wcdevs.blog.awsdeployer.Util.environmentFrom;
-import static org.wcdevs.blog.awsdeployer.Util.getValueInApp;
-import static org.wcdevs.blog.awsdeployer.Util.string;
-
 public class DockerRepositoryDeployer {
-  private static final String NAME = "-docker-repository";
+  private static final String CONSTRUCT_NAME = "DockerRepository";
 
   public static void main(String[] args) {
     var app = new App();
 
-    String accountId = getValueInApp("accountId", app);
-    String region = getValueInApp("region", app);
-    String applicationName = getValueInApp("applicationName", app);
+    String accountId = Util.getValueInApp("accountId", app);
+    String region = Util.getValueInApp("region", app);
+    String applicationName = Util.getValueInApp("applicationName", app);
 
     var stackProps = StackProps.builder()
-                               .stackName(string(applicationName, NAME))
-                               .env(environmentFrom(accountId, region))
+                               .stackName(Util.string(applicationName, CONSTRUCT_NAME))
+                               .env(Util.environmentFrom(accountId, region))
                                .build();
-    var dockerRepositoryStack = new Stack(app, string(NAME, "Stack"), stackProps);
+    var dockerRepositoryStack = new Stack(app, Util.string(CONSTRUCT_NAME, "Stack"), stackProps);
 
-    var inputParameters = DockerRepository.newInputParameters(string(applicationName, NAME),
-                                                              accountId);
-    DockerRepository.newInstance(dockerRepositoryStack, NAME, inputParameters);
+    var inputParams = DockerRepository.newInputParameters(Util.string(applicationName,
+                                                                      CONSTRUCT_NAME),
+                                                          accountId);
+    DockerRepository.newInstance(dockerRepositoryStack, CONSTRUCT_NAME, inputParams);
 
     app.synth();
   }
