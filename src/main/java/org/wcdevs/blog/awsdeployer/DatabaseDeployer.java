@@ -24,7 +24,7 @@ public class DatabaseDeployer {
                                .env(awsEnvironment)
                                .build();
     var databaseStack = new Stack(app, "DatabaseStack", stackProps);
-    var inputParameters = Database.newInputParameters();
+    var inputParameters = Database.InputParameters.builder().build();
 
     Database.newInstance(databaseStack, DATABASE_NAME, applicationEnvironment, inputParameters);
 
