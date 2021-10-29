@@ -1,6 +1,6 @@
-# Sets up everything needed to deploy Docker images with CDK.
-# It deploys everything that is not specific to a certain environment (such as staging or prod).
-# It should be a one-off workflow run.
+# One-off run. Deployments:
+# - Bootstrap CDK
+# - ECR Docker Repository
 
 name: 01 - Manually bootstrap the CDK Environment
 
