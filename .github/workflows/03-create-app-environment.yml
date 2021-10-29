@@ -1,4 +1,6 @@
 # Deploys all resources that are specific to the app, but not the app itself.
+# - DB stack
+# - Deployment Sequencer Lambda
 
 name: 03 - Manually create the app environment
 
