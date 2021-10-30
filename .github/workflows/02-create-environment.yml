@@ -1,6 +1,6 @@
 # # One-off run. Environment-specific resources
 # - Create network
-name: 1 - Manually create a shared environment
+name: 02 - Manually create a shared environment
 
 on:
   workflow_dispatch:
