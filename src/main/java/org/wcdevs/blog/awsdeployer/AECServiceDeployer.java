@@ -45,15 +45,15 @@ public class AECServiceDeployer {
     var parametersStack = parametersStack(app, applicationEnvironment, awsEnvironment);
     var serviceStack = serviceStack(app, applicationEnvironment, awsEnvironment);
 
-    var dockerImage = AECService.newDockerImage(dockerRepositoryName, dockerImageTag,
-                                                dockerImageUrl);
-
     var dbOutputParameters = Database.outputParametersFrom(parametersStack,
                                                            applicationEnvironment);
 
     var environmentVariables = environmentVariables(serviceStack, springProfile, environmentName,
                                                     dbOutputParameters);
     var secGroupIdsToGrantIngressFromEcs = secGroupIdAccessFromEcs(dbOutputParameters);
+
+    var dockerImage = AECService.newDockerImage(dockerRepositoryName, dockerImageTag,
+                                                dockerImageUrl);
     var inputParameters = inputParameters(dockerImage, environmentVariables,
                                           secGroupIdsToGrantIngressFromEcs);
 
