@@ -5,7 +5,7 @@ import org.wcdevs.blog.cdk.Util;
 import software.amazon.awscdk.core.App;
 
 public class DeploymentSequencerDeployer {
-  private static final String CONSTRUCT_NAME = "DeploymentSequencerStack";
+  private static final String CONSTRUCT_NAME = "DeploymentSequencerApp";
 
   public static void main(String[] args) {
     App app = new App();

@@ -19,7 +19,13 @@ import java.util.List;
 import java.util.Map;
 
 public class AECServiceDeployer {
-  private static final String CONSTRUCT_NAME = "AECService";
+  private static final String CONSTRUCT_NAME = "AECServiceApp";
+
+  private static final String SPRING_PROFILES_ACTIVE = "SPRING_PROFILES_ACTIVE";
+  private static final String SPRING_DATASOURCE_URL = "SPRING_DATASOURCE_URL";
+  private static final String SPRING_DATASOURCE_USERNAME = "SPRING_DATASOURCE_USERNAME";
+  private static final String SPRING_DATASOURCE_PASSWORD = "SPRING_DATASOURCE_PASSWORD";
+  private static final String ENVIRONMENT_NAME = "ENVIRONMENT_NAME";
 
   public static void main(String[] args) {
     var app = new App();
@@ -61,17 +67,18 @@ public class AECServiceDeployer {
 
   private static Stack parametersStack(App app, ApplicationEnvironment applicationEnvironment,
                                        Environment awsEnvironment) {
-    long timestamp = System.currentTimeMillis();
-    var utc = LocalDateTime.now(ZoneId.of("UTC"));
-    var timeId = utc.getYear() + "-" + utc.getMonthValue() + "-" + utc.getDayOfMonth() + "-"
-                 + utc.getHour() + "-" + utc.getMinute() + "-" + utc.getSecond() + "-" + timestamp;
+    var timeId = getTimeId();
     var paramsStackName = applicationEnvironment.prefixed("Service-Parameters-" + timeId);
 
-    return new Stack(app, "ServiceParametersStack-" + timestamp,
-                     StackProps.builder()
-                               .stackName(paramsStackName)
-                               .env(awsEnvironment)
-                               .build());
+    return new Stack(app, "ServiceParametersStack-" + timeId,
+                     StackProps.builder().stackName(paramsStackName).env(awsEnvironment).build());
+  }
+
+  private static String getTimeId() {
+    long timestamp = System.currentTimeMillis();
+    var utc = LocalDateTime.now(ZoneId.of("UTC"));
+    return Util.joinedString("-", utc.getYear(), utc.getMonthValue(), utc.getDayOfMonth(),
+                             utc.getHour(), utc.getMinute(), utc.getSecond(), timestamp);
   }
 
   private static Stack serviceStack(App app, ApplicationEnvironment applicationEnvironment,
@@ -98,11 +105,11 @@ public class AECServiceDeployer {
     var dbUsername = Database.getDataBaseUsernameFromSecret(scope, dbOutput);
     var dbPassword = Database.getDataBasePasswordFromSecret(scope, dbOutput);
 
-    return Map.of("SPRING_PROFILES_ACTIVE", springProfile,
-                  "SPRING_DATASOURCE_URL", springDataSourceUrl,
-                  "SPRING_DATASOURCE_USERNAME", dbUsername,
-                  "SPRING_DATASOURCE_PASSWORD", dbPassword,
-                  "ENVIRONMENT_NAME", environmentName);
+    return Map.of(SPRING_PROFILES_ACTIVE, springProfile,
+                  SPRING_DATASOURCE_URL, springDataSourceUrl,
+                  SPRING_DATASOURCE_USERNAME, dbUsername,
+                  SPRING_DATASOURCE_PASSWORD, dbPassword,
+                  ENVIRONMENT_NAME, environmentName);
   }
 
   private static AECService.InputParameters inputParameters(AECService.DockerImage dockerImage,

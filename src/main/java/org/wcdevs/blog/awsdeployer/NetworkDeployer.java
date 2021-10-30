@@ -7,7 +7,7 @@ import software.amazon.awscdk.core.Stack;
 import software.amazon.awscdk.core.StackProps;
 
 public class NetworkDeployer {
-  private static final String CONSTRUCT_NAME = "Network";
+  private static final String CONSTRUCT_NAME = "NetworkApp";
 
   public static void main(String[] args) {
     var app = new App();

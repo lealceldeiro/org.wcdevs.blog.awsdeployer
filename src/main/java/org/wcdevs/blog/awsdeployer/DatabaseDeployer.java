@@ -8,7 +8,7 @@ import software.amazon.awscdk.core.Stack;
 import software.amazon.awscdk.core.StackProps;
 
 public class DatabaseDeployer {
-  private static final String CONSTRUCT_NAME = "Database";
+  private static final String CONSTRUCT_NAME = "DatabaseApp";
 
   public static void main(String[] args) {
     App app = new App();

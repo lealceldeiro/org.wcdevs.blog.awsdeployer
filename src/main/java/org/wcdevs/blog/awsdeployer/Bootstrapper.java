@@ -5,7 +5,7 @@ import software.amazon.awscdk.core.Stack;
 import software.amazon.awscdk.core.StackProps;
 
 public class Bootstrapper {
-  private static final String CONSTRUCT_NAME = "Bootstrap";
+  private static final String CONSTRUCT_NAME = "BootstrapApp";
 
   public static void main(final String[] args) {
     App app = new App();
