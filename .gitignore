@@ -49,12 +49,16 @@ build/
 
 #SDK
 cdk.out
+cdk.context.json
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
 # Node
 /node_modules
+
+/deployment-sequencer-lambda/node_modules
+/deployment-sequencer-lambda/dist
 
 !.mvn/wrapper/maven-wrapper.jar
 target/
