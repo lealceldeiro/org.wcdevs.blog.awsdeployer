@@ -7,7 +7,7 @@ import software.amazon.awscdk.core.Stack;
 import software.amazon.awscdk.core.StackProps;
 
 public class DockerRepositoryDeployer {
-  private static final String CONSTRUCT_NAME = "DockerRepositoryApp";
+  private static final String CONSTRUCT_NAME = "dockerrepositoryapp";
 
   public static void main(String[] args) {
     var app = new App();
