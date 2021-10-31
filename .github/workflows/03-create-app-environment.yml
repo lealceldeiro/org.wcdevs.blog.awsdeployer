@@ -16,8 +16,8 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     name: Deploy the database stack
-    steps:
 
+    steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -42,8 +42,8 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     name: Deploy the Deployment Sequencer AWS Lambda Function
-    steps:
 
+    steps:
       - name: Checkout code
         uses: actions/checkout@v2
 

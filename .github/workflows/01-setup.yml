@@ -11,8 +11,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     name: Bootstrap CDK setup
-    steps:
 
+    steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -33,6 +33,7 @@ jobs:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
         run: |
           npm run bootstrap
+
       - name: Deploy Docker repository
         if: github.ref == 'refs/heads/main'
         env:

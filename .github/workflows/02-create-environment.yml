@@ -14,8 +14,8 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     name: Deploy the network stack
-    steps:
 
+    steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
