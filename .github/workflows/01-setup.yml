@@ -24,7 +24,8 @@ jobs:
 
       - name: NPM install
         run: |
-          npm install
+          npm i -g aws-cdk
+          npm i
           echo "CKD version:"
           cdk version
 
