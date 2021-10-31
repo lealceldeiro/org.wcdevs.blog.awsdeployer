@@ -23,7 +23,10 @@ jobs:
           distribution: 'adopt'
 
       - name: NPM install
-        run: npm install
+        run: |
+          npm install
+          echo "CKD version:"
+          cdk version
 
       - name: Deploy CDK bootstrap stack
         env:
