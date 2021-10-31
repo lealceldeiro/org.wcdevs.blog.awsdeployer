@@ -68,6 +68,8 @@ interface DeploymentEvent {
   owner: string;
   repo: string;
   workflowId: string;
+  environmentName: string;
+  applicationName: string;
   dockerImageTag: string;
 }
 
@@ -105,7 +107,11 @@ class GitHub {
 
     const requestData = {
       ref: e.ref,
-      inputs: { "docker-image-tag": e.dockerImageTag },
+      inputs: {
+        "environment": e.environmentName,
+        "application-name": e.applicationName,
+        "docker-image-tag": e.dockerImageTag
+      },
     };
 
     // https://docs.github.com/en/rest/reference/actions#create-a-workflow-dispatch-event

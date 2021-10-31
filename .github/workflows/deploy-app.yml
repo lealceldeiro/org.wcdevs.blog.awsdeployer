@@ -1,0 +1,45 @@
+# workflow supposed to be triggered by the AWS Lambda function in charge of executing the deployment
+# the lambda function is instructed to do so by any other app (i.e: the core app) after that app
+# has already built and published it image to the repository
+
+name: Deploy the app
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "The environment where the app will be deployed"
+        required: true
+      application-name:
+        description: "The name of the application that will be deployed"
+        required: true
+      docker-image-tag:
+        description: "The Docker image to deploy"
+        required: true
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy app
+    env:
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEPLOY_REGION }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: NPM install
+        run: npm install
+
+      - name: Deploy service stack
+        if: github.ref == 'refs/heads/main'
+        run: |
+          npm run service:deploy -- -c environmentName=${{ github.event.inputs.environment }} -c applicationName=${{ github.event.inputs.application-name }} -c dockerImageTag=${{ github.event.inputs.docker-image-tag }}
+
+      - name: Clean up old parameter stacks
+        if: github.ref == 'refs/heads/main'
+        run: |
+          aws cloudformation describe-stacks --region ${{ secrets.AWS_DEPLOY_REGION }} --query "Stacks[].StackName" --output text | sed -e "s/\s\+/\n/g" | grep -e "${{ github.event.inputs.environment }}-${{ github.event.inputs.application-name }}-Service-Parameters" | sort -r | tail -n+2 > stacks_to_delete.txt
+          for stack in $(cat stacks_to_delete.txt); do aws cloudformation delete-stack --stack-name $stack --region ${{ secrets.AWS_DEPLOY_REGION }};  done
