@@ -104,8 +104,8 @@ public class AECServiceDeployer {
                                             dbEndpointAddress, dbEndpointPort, dbName);
 
     var dbSecret = Database.getDataBaseSecret(scope, dbOutput);
-    var dbUsername = dbSecret.secretValueFromJson("username").toString();
-    var dbPassword = dbSecret.secretValueFromJson("password").toString();
+    var dbUsername = dbSecret.secretValueFromJson(Database.USERNAME_SECRET_HOLDER).toString();
+    var dbPassword = dbSecret.secretValueFromJson(Database.PASSWORD_SECRET_HOLDER).toString();
 
     return Map.of(SPRING_PROFILES_ACTIVE, springProfile,
                   SPRING_DATASOURCE_URL, springDataSourceUrl,
