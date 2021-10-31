@@ -30,8 +30,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Install CDK
+        run: |
+          npm i -g aws-cdk
+          echo "CKD version:"
+          cdk version
+
       - name: NPM install
-        run: npm install
+        run: npm i
 
       - name: Deploy service stack
         if: github.ref == 'refs/heads/main'

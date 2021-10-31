@@ -53,8 +53,14 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
 
+      - name: Install CDK
+        run: |
+          npm i -g aws-cdk
+          echo "CKD version:"
+          cdk version
+
       - name: NPM install
-        run: npm install
+        run: npm i
 
       - name: Deploy Deployment Sequencer Lambda Function
         env:
