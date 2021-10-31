@@ -102,8 +102,10 @@ public class AECServiceDeployer {
     var dbName = dbOutput.getDbName();
     var springDataSourceUrl = String.format("jdbc:postgresql://%s:%s/%s",
                                             dbEndpointAddress, dbEndpointPort, dbName);
-    var dbUsername = Database.getDataBaseUsernameFromSecret(scope, dbOutput);
-    var dbPassword = Database.getDataBasePasswordFromSecret(scope, dbOutput);
+
+    var dbSecret = Database.getDataBaseSecret(scope, dbOutput);
+    var dbUsername = dbSecret.secretValueFromJson("username").toString();
+    var dbPassword = dbSecret.secretValueFromJson("password").toString();
 
     return Map.of(SPRING_PROFILES_ACTIVE, springProfile,
                   SPRING_DATASOURCE_URL, springDataSourceUrl,
@@ -118,7 +120,7 @@ public class AECServiceDeployer {
     var inputParameters = AECService.newInputParameters(dockerImage, envVariables,
                                                         secGIdsGrantIngressFEcs);
     inputParameters.setTaskRolePolicyStatements(taskRolePolicyStatements());
-    inputParameters.setHealthCheckPath("actuator/health");
+    inputParameters.setHealthCheckPath("/actuator/health");
     inputParameters.setAwsLogsDateTimeFormat("%Y-%m-%dT%H:%M:%S.%f%z");
     inputParameters.setHealthCheckIntervalSeconds(45);
 
