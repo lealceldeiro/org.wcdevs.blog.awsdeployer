@@ -2,7 +2,7 @@
   "name": "org.wcdevs.blog.awsdeployer",
   "version": "0.0.1",
   "private": true,
-  "devDependencies": {
+  "dependencies": {
     "aws-sdk": "2.995.0"
   },
   "scripts": {
