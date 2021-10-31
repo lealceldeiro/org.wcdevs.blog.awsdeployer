@@ -22,12 +22,14 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
 
-      - name: NPM install
+      - name: Install CDK
         run: |
           npm i -g aws-cdk
-          npm i
           echo "CKD version:"
           cdk version
+
+      - name: NPM install
+        run: npm i
 
       - name: Deploy CDK bootstrap stack
         env:
