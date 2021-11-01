@@ -75,7 +75,7 @@ interface DeploymentEvent {
 
 class GitHub {
   static API = "https://api.github.com";
-  static WORKFLOW_STATUS_COMPLETED = "completed";
+  static WORKFLOW_STATUS_COMPLETED: String = "completed";
   githubToken: string;
 
   constructor(githubToken: string) {
@@ -93,11 +93,11 @@ class GitHub {
         this.axiosConfig()
     );
 
-    const inProgressWorkflowRuns = response.data['workflow_runs'] || [].filter(
-        run => run.status != GitHub.WORKFLOW_STATUS_COMPLETED
+    const inProgressRuns: WorkflowRun[] = response.data['workflow_runs'] || [].filter(
+        (run: WorkflowRun) => run.status != GitHub.WORKFLOW_STATUS_COMPLETED
     );
 
-    return Promise.resolve(inProgressWorkflowRuns.length > 0);
+    return Promise.resolve(inProgressRuns.length > 0);
   }
 
   async triggerWorkflow(e: DeploymentEvent) {
@@ -174,4 +174,7 @@ class DeploymentQueue {
   }
 }
 
+interface WorkflowRun {
+  status: String;
+}
 // endregion
