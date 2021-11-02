@@ -22,9 +22,11 @@ public class AECServiceDeployer {
   private static final String CONSTRUCT_NAME = "AECServiceApp";
 
   private static final String SPRING_PROFILES_ACTIVE = "SPRING_PROFILES_ACTIVE";
-  private static final String SPRING_DATASOURCE_URL = "SPRING_DATASOURCE_URL";
-  private static final String SPRING_DATASOURCE_USERNAME = "SPRING_DATASOURCE_USERNAME";
-  private static final String SPRING_DATASOURCE_PASSWORD = "SPRING_DATASOURCE_PASSWORD";
+  private static final String CORE_APP_DB_URL = "CORE_APP_DB_URL";
+  private static final String CORE_APP_DB_USER = "CORE_APP_DB_USER";
+  private static final String CORE_APP_DB_PASSWORD = "CORE_APP_DB_PASSWORD";
+  private static final String CORE_APP_DB_DRIVER = "CORE_APP_DB_DRIVER";
+  private static final String CORE_APP_DB_DRIVER_POSTGRES = "org.postgresql.Driver";
   private static final String ENVIRONMENT_NAME = "ENVIRONMENT_NAME";
 
   public static void main(String[] args) {
@@ -108,9 +110,10 @@ public class AECServiceDeployer {
     var dbPassword = dbSecret.secretValueFromJson(Database.PASSWORD_SECRET_HOLDER).toString();
 
     return Map.of(SPRING_PROFILES_ACTIVE, springProfile,
-                  SPRING_DATASOURCE_URL, springDataSourceUrl,
-                  SPRING_DATASOURCE_USERNAME, dbUsername,
-                  SPRING_DATASOURCE_PASSWORD, dbPassword,
+                  CORE_APP_DB_URL, springDataSourceUrl,
+                  CORE_APP_DB_USER, dbUsername,
+                  CORE_APP_DB_PASSWORD, dbPassword,
+                  CORE_APP_DB_DRIVER, CORE_APP_DB_DRIVER_POSTGRES,
                   ENVIRONMENT_NAME, environmentName);
   }
 
