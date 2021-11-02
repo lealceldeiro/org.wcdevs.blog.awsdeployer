@@ -1,7 +1,7 @@
 import {
   GetQueueAttributesCommand,
-  SQSClient,
-  GetQueueAttributesResult
+  GetQueueAttributesResult,
+  SQSClient
 } from "@aws-sdk/client-sqs";
 import axios from "axios";
 
@@ -93,8 +93,14 @@ class GitHub {
         this.axiosConfig()
     );
 
+    console.log(
+        `Searching for number of workflows different from status ${ GitHub.WORKFLOW_STATUS_COMPLETED }.`
+    );
     const inProgressRuns: WorkflowRun[] = response.data['workflow_runs'] || [].filter(
-        (run: WorkflowRun) => run.status != GitHub.WORKFLOW_STATUS_COMPLETED
+        (run: WorkflowRun, index: number) => {
+          console.log(`Workflow ${ index } status: ${ run.status }`);
+          return run.status != GitHub.WORKFLOW_STATUS_COMPLETED;
+        }
     );
 
     return Promise.resolve(inProgressRuns.length > 0);
@@ -173,4 +179,5 @@ class DeploymentQueue {
 interface WorkflowRun {
   status: String;
 }
+
 // endregion
