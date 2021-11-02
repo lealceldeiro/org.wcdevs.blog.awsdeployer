@@ -2,7 +2,7 @@
 # the lambda function is instructed to do so by any other app (i.e: the core app) after that app
 # has already built and published it image to the repository
 
-name: Deploy the app
+name: Application Deployment
 
 on:
   workflow_dispatch:
