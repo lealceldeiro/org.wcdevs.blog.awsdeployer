@@ -86,7 +86,6 @@ class GitHub {
     console.log(
         `Querying GitHub API to check if workflow is running for event: ${ JSON.stringify(e) }`
     );
-
     // https://docs.github.com/en/rest/reference/actions#list-workflow-runs
     const response = await axios.get(
         `${ GitHub.API }/repos/${ e.owner }/${ e.repo }/actions/workflows/${ e.workflowId }/runs`,
@@ -96,14 +95,20 @@ class GitHub {
     console.log(
         `Searching for number of workflows different from status ${ GitHub.WORKFLOW_STATUS_COMPLETED }.`
     );
-    const inProgressRuns: WorkflowRun[] = response.data['workflow_runs'] || [].filter(
-        (run: WorkflowRun, index: number) => {
-          console.log(`Workflow ${ index } status: ${ run.status }`);
-          return run.status != GitHub.WORKFLOW_STATUS_COMPLETED;
-        }
-    );
+    const workflows: WorkflowRun[] = response.data['workflow_runs'] || [];
+    if (workflows.length == 0) {
+      console.log(`No information for workflows received. Raw data: ${response.data}`);
+    } else {
+      console.log(`Information retrieved for ${workflows.length} workflow(s)`);
+    }
 
-    return Promise.resolve(inProgressRuns.length > 0);
+    const inProgress = workflows.filter(GitHub.workflowsNotCompleted);
+    return Promise.resolve(inProgress.length > 0);
+  }
+
+  private static workflowsNotCompleted(workflow: WorkflowRun, index: number): boolean {
+    console.log(`Workflow ${ index } status: ${ workflow.status }`);
+    return workflow.status != GitHub.WORKFLOW_STATUS_COMPLETED;
   }
 
   async triggerWorkflow(e: DeploymentEvent) {
