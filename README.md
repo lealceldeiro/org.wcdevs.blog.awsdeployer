@@ -1,6 +1,6 @@
 # org.wcdevs.blog.awsdeployer
 
-[![License: Apache](https://img.shields.io/badge/License-Apache%202.0-blue)](https://opensource.org/licenses/Apache-2.0) [![Maven Build](https://github.com/lealceldeiro/org.wcdevs.blog.awsdeployer/actions/workflows/maven.yml/badge.svg)](https://github.com/lealceldeiro/org.wcdevs.blog.awsdeployer/actions/workflows/maven.yml) [![CodeQL](https://github.com/lealceldeiro/org.wcdevs.blog.awsdeployer/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/lealceldeiro/org.wcdevs.blog.awsdeployer/actions/workflows/codeql-analysis.yml)
+[![License: Apache](https://img.shields.io/badge/License-Apache%202.0-blue)](https://opensource.org/licenses/Apache-2.0) [![Maven Build](https://github.com/lealceldeiro/org.wcdevs.blog.awsdeployer/actions/workflows/maven.yml/badge.svg)](https://github.com/lealceldeiro/org.wcdevs.blog.awsdeployer/actions/workflows/maven.yml) [![CodeQL](https://github.com/lealceldeiro/org.wcdevs.blog.awsdeployer/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/lealceldeiro/org.wcdevs.blog.awsdeployer/actions/workflows/codeql-analysis.yml) [![Last Deployment](https://github.com/lealceldeiro/org.wcdevs.blog.awsdeployer/actions/workflows/deploy-app.yml/badge.svg)](https://github.com/lealceldeiro/org.wcdevs.blog.awsdeployer/actions/workflows/deploy-app.yml)
 
 Holds the CDK applications and stack that uses CDK constructs to deploy resources [blog.wcdevs.org](https://blog.wcdevs.org)
 
