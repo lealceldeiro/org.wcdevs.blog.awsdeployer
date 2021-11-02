@@ -161,16 +161,12 @@ class DeploymentQueue {
     console.log(`GetQueueAttributesResult: ${ JSON.stringify(data) }`);
 
     const waitingMessages: number =
-        this.intValue(data.Attributes["ApproximateNumberOfMessages"])
-        + this.intValue(data.Attributes["ApproximateNumberOfMessagesDelayed"])
-        + this.intValue(data.Attributes["ApproximateNumberOfMessagesNotVisible"])
+        parseInt(data.Attributes["ApproximateNumberOfMessages"])
+        + parseInt(data.Attributes["ApproximateNumberOfMessagesDelayed"])
+        + parseInt(data.Attributes["ApproximateNumberOfMessagesNotVisible"])
         - 1; // the message currently processed by this Lambda is counted as a "not visible" message
 
     return Promise.resolve(waitingMessages > 0);
-  }
-
-  intValue(value: string): number {
-    return parseInt(value);
   }
 }
 
