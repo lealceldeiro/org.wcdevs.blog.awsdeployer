@@ -17,8 +17,9 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-public class AECServiceDeployer {
+public class ElasticContainerServiceDeployer {
   private static final String CONSTRUCT_NAME = "AECServiceApp";
 
   private static final String SPRING_PROFILES_ACTIVE = "SPRING_PROFILES_ACTIVE";
@@ -27,6 +28,7 @@ public class AECServiceDeployer {
   private static final String CORE_APP_DB_PASSWORD = "CORE_APP_DB_PASSWORD";
   private static final String CORE_APP_DB_DRIVER = "CORE_APP_DB_DRIVER";
   private static final String CORE_APP_DB_DRIVER_POSTGRES = "org.postgresql.Driver";
+  private static final String CORE_APP_LISTEN_PORT = "CORE_APP_LISTEN_PORT";
   private static final String ENVIRONMENT_NAME = "ENVIRONMENT_NAME";
 
   public static void main(String[] args) {
@@ -40,6 +42,8 @@ public class AECServiceDeployer {
     String dockerRepositoryName = Util.getValueInApp("dockerRepositoryName", app, false);
     String dockerImageTag = Util.getValueInApp("dockerImageTag", app, false);
     String dockerImageUrl = Util.getValueInApp("dockerImageUrl", app, false);
+    String appListenPort = Optional.<String>ofNullable(Util.getValueInApp("appPort", app, false))
+                                   .orElse("8080");
 
     var awsEnvironment = Util.environmentFrom(accountId, region);
     var applicationEnvironment = new ApplicationEnvironment(applicationName, environmentName);
@@ -51,7 +55,7 @@ public class AECServiceDeployer {
                                                            applicationEnvironment);
 
     var environmentVariables = environmentVariables(serviceStack, springProfile, environmentName,
-                                                    dbOutputParameters);
+                                                    appListenPort, dbOutputParameters);
     var secGroupIdsToGrantIngressFromEcs = secGroupIdAccessFromEcs(dbOutputParameters);
 
     var dockerImage = AECService.newDockerImage(dockerRepositoryName, dockerImageTag,
@@ -98,6 +102,7 @@ public class AECServiceDeployer {
 
   private static Map<String, String> environmentVariables(Construct scope, String springProfile,
                                                           String environmentName,
+                                                          String appListenPort,
                                                           Database.OutputParameters dbOutput) {
     var dbEndpointAddress = dbOutput.getEndpointAddress();
     var dbEndpointPort = dbOutput.getEndpointPort();
@@ -114,6 +119,7 @@ public class AECServiceDeployer {
                   CORE_APP_DB_USER, dbUsername,
                   CORE_APP_DB_PASSWORD, dbPassword,
                   CORE_APP_DB_DRIVER, CORE_APP_DB_DRIVER_POSTGRES,
+                  CORE_APP_LISTEN_PORT, appListenPort,
                   ENVIRONMENT_NAME, environmentName);
   }
 
