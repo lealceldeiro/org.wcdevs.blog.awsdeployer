@@ -1,8 +1,8 @@
 package org.wcdevs.blog.awsdeployer;
 
-import org.wcdevs.blog.cdk.AECService;
 import org.wcdevs.blog.cdk.ApplicationEnvironment;
 import org.wcdevs.blog.cdk.Database;
+import org.wcdevs.blog.cdk.ElasticContainerService;
 import org.wcdevs.blog.cdk.Network;
 import org.wcdevs.blog.cdk.Util;
 import software.amazon.awscdk.core.App;
@@ -58,15 +58,16 @@ public class ElasticContainerServiceDeployer {
                                                     appListenPort, dbOutputParameters);
     var secGroupIdsToGrantIngressFromEcs = secGroupIdAccessFromEcs(dbOutputParameters);
 
-    var dockerImage = AECService.newDockerImage(dockerRepositoryName, dockerImageTag,
-                                                dockerImageUrl);
+    var dockerImage = ElasticContainerService.newDockerImage(dockerRepositoryName, dockerImageTag,
+                                                             dockerImageUrl);
     var inputParameters = inputParameters(dockerImage, environmentVariables,
                                           secGroupIdsToGrantIngressFromEcs);
 
     var networkOutputParameters = Network.outputParametersFrom(serviceStack, environmentName);
 
-    AECService.newInstance(serviceStack, CONSTRUCT_NAME, awsEnvironment, applicationEnvironment,
-                           inputParameters, networkOutputParameters);
+    ElasticContainerService.newInstance(serviceStack, CONSTRUCT_NAME, awsEnvironment,
+                                        applicationEnvironment, inputParameters,
+                                        networkOutputParameters);
 
     app.synth();
   }
@@ -123,11 +124,13 @@ public class ElasticContainerServiceDeployer {
                   ENVIRONMENT_NAME, environmentName);
   }
 
-  private static AECService.InputParameters inputParameters(AECService.DockerImage dockerImage,
-                                                            Map<String, String> envVariables,
-                                                            List<String> secGIdsGrantIngressFEcs) {
-    var inputParameters = AECService.newInputParameters(dockerImage, envVariables,
-                                                        secGIdsGrantIngressFEcs);
+  private static ElasticContainerService.InputParameters inputParameters(
+      ElasticContainerService.DockerImage dockerImage,
+      Map<String, String> envVariables,
+      List<String> secGIdsGrantIngressFEcs
+                                                                        ) {
+    var inputParameters = ElasticContainerService.newInputParameters(dockerImage, envVariables,
+                                                                     secGIdsGrantIngressFEcs);
     inputParameters.setTaskRolePolicyStatements(taskRolePolicyStatements());
     inputParameters.setHealthCheckPath("/actuator/health");
     inputParameters.setAwsLogsDateTimeFormat("%Y-%m-%dT%H:%M:%S.%f%z");
