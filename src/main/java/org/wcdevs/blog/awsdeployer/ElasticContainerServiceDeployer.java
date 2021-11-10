@@ -85,9 +85,9 @@ public class ElasticContainerServiceDeployer {
   private static Stack parametersStack(App app, ApplicationEnvironment applicationEnvironment,
                                        Environment awsEnvironment) {
     var timeId = getTimeId();
-    var paramsStackName = applicationEnvironment.prefixed("Service-Parameters-" + timeId);
+    var paramsStackName = applicationEnvironment.prefixed("parameters-service-stack" + timeId);
 
-    return new Stack(app, "ServiceParametersStack-" + timeId,
+    return new Stack(app, "parameters-service-stack" + timeId,
                      StackProps.builder().stackName(paramsStackName).env(awsEnvironment).build());
   }
 
@@ -100,7 +100,7 @@ public class ElasticContainerServiceDeployer {
 
   private static Stack serviceStack(App app, ApplicationEnvironment applicationEnvironment,
                                     Environment awsEnvironment) {
-    var serviceStackName = applicationEnvironment.prefixed("Service");
+    var serviceStackName = applicationEnvironment.prefixed("service-stack");
     return new Stack(app, "ServiceStack", StackProps.builder()
                                                     .stackName(serviceStackName)
                                                     .env(awsEnvironment)
