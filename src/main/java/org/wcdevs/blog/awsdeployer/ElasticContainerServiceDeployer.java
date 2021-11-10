@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public class ElasticContainerServiceDeployer {
-  private static final String CONSTRUCT_NAME = "AECServiceApp";
+  private static final String CONSTRUCT_NAME = "ECServiceApp";
 
   private static final String SPRING_PROFILES_ACTIVE = "SPRING_PROFILES_ACTIVE";
   private static final String CORE_APP_DB_URL = "CORE_APP_DB_URL";
@@ -29,6 +29,7 @@ public class ElasticContainerServiceDeployer {
   private static final String CORE_APP_DB_DRIVER = "CORE_APP_DB_DRIVER";
   private static final String CORE_APP_DB_DRIVER_POSTGRES = "org.postgresql.Driver";
   private static final String CORE_APP_LISTEN_PORT = "CORE_APP_LISTEN_PORT";
+  private static final String CORE_APP_MANAGEMENT_PORT = "CORE_APP_MANAGEMENT_PORT";
   private static final String ENVIRONMENT_NAME = "ENVIRONMENT_NAME";
 
   public static void main(String[] args) {
@@ -42,8 +43,10 @@ public class ElasticContainerServiceDeployer {
     String dockerRepositoryName = Util.getValueInApp("dockerRepositoryName", app, false);
     String dockerImageTag = Util.getValueInApp("dockerImageTag", app, false);
     String dockerImageUrl = Util.getValueInApp("dockerImageUrl", app, false);
-    String appListenPort = Optional.<String>ofNullable(Util.getValueInApp("appPort", app, false))
-                                   .orElse("8080");
+    var appListenPort = Optional.ofNullable(Util.<String>getValueInApp("appPort", app, false))
+                                .orElse("8080");
+    var managementPort = Util.<String>getValueInApp("appManagementPort", app, false);
+    var appManagementPort = Optional.ofNullable(managementPort).orElse("8082");
 
     var awsEnvironment = Util.environmentFrom(accountId, region);
     var applicationEnvironment = new ApplicationEnvironment(applicationName, environmentName);
@@ -55,7 +58,8 @@ public class ElasticContainerServiceDeployer {
                                                            applicationEnvironment);
 
     var environmentVariables = environmentVariables(serviceStack, springProfile, environmentName,
-                                                    appListenPort, dbOutputParameters);
+                                                    appListenPort, appManagementPort,
+                                                    dbOutputParameters);
     var secGroupIdsToGrantIngressFromEcs = secGroupIdAccessFromEcs(dbOutputParameters);
 
     var dockerImage = ElasticContainerService.newDockerImage(dockerRepositoryName, dockerImageTag,
@@ -104,6 +108,7 @@ public class ElasticContainerServiceDeployer {
   private static Map<String, String> environmentVariables(Construct scope, String springProfile,
                                                           String environmentName,
                                                           String appListenPort,
+                                                          String appManagementPort,
                                                           Database.OutputParameters dbOutput) {
     var dbEndpointAddress = dbOutput.getEndpointAddress();
     var dbEndpointPort = dbOutput.getEndpointPort();
@@ -121,6 +126,7 @@ public class ElasticContainerServiceDeployer {
                   CORE_APP_DB_PASSWORD, dbPassword,
                   CORE_APP_DB_DRIVER, CORE_APP_DB_DRIVER_POSTGRES,
                   CORE_APP_LISTEN_PORT, appListenPort,
+                  CORE_APP_MANAGEMENT_PORT, appManagementPort,
                   ENVIRONMENT_NAME, environmentName);
   }
 
