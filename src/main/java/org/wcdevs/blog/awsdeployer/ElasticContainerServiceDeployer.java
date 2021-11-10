@@ -1,8 +1,8 @@
 package org.wcdevs.blog.awsdeployer;
 
-import org.wcdevs.blog.cdk.AECService;
 import org.wcdevs.blog.cdk.ApplicationEnvironment;
 import org.wcdevs.blog.cdk.Database;
+import org.wcdevs.blog.cdk.ElasticContainerService;
 import org.wcdevs.blog.cdk.Network;
 import org.wcdevs.blog.cdk.Util;
 import software.amazon.awscdk.core.App;
@@ -17,9 +17,10 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-public class AECServiceDeployer {
-  private static final String CONSTRUCT_NAME = "AECServiceApp";
+public class ElasticContainerServiceDeployer {
+  private static final String CONSTRUCT_NAME = "ECServiceApp";
 
   private static final String SPRING_PROFILES_ACTIVE = "SPRING_PROFILES_ACTIVE";
   private static final String CORE_APP_DB_URL = "CORE_APP_DB_URL";
@@ -27,6 +28,8 @@ public class AECServiceDeployer {
   private static final String CORE_APP_DB_PASSWORD = "CORE_APP_DB_PASSWORD";
   private static final String CORE_APP_DB_DRIVER = "CORE_APP_DB_DRIVER";
   private static final String CORE_APP_DB_DRIVER_POSTGRES = "org.postgresql.Driver";
+  private static final String CORE_APP_LISTEN_PORT = "CORE_APP_LISTEN_PORT";
+  private static final String CORE_APP_MANAGEMENT_PORT = "CORE_APP_MANAGEMENT_PORT";
   private static final String ENVIRONMENT_NAME = "ENVIRONMENT_NAME";
 
   public static void main(String[] args) {
@@ -40,6 +43,10 @@ public class AECServiceDeployer {
     String dockerRepositoryName = Util.getValueInApp("dockerRepositoryName", app, false);
     String dockerImageTag = Util.getValueInApp("dockerImageTag", app, false);
     String dockerImageUrl = Util.getValueInApp("dockerImageUrl", app, false);
+    var appListenPort = Optional.ofNullable(Util.<String>getValueInApp("appPort", app, false))
+                                .orElse("8080");
+    var managementPort = Util.<String>getValueInApp("appManagementPort", app, false);
+    var appManagementPort = Optional.ofNullable(managementPort).orElse("8082");
 
     var awsEnvironment = Util.environmentFrom(accountId, region);
     var applicationEnvironment = new ApplicationEnvironment(applicationName, environmentName);
@@ -51,18 +58,20 @@ public class AECServiceDeployer {
                                                            applicationEnvironment);
 
     var environmentVariables = environmentVariables(serviceStack, springProfile, environmentName,
+                                                    appListenPort, appManagementPort,
                                                     dbOutputParameters);
     var secGroupIdsToGrantIngressFromEcs = secGroupIdAccessFromEcs(dbOutputParameters);
 
-    var dockerImage = AECService.newDockerImage(dockerRepositoryName, dockerImageTag,
-                                                dockerImageUrl);
+    var dockerImage = ElasticContainerService.newDockerImage(dockerRepositoryName, dockerImageTag,
+                                                             dockerImageUrl);
     var inputParameters = inputParameters(dockerImage, environmentVariables,
                                           secGroupIdsToGrantIngressFromEcs);
 
     var networkOutputParameters = Network.outputParametersFrom(serviceStack, environmentName);
 
-    AECService.newInstance(serviceStack, CONSTRUCT_NAME, awsEnvironment, applicationEnvironment,
-                           inputParameters, networkOutputParameters);
+    ElasticContainerService.newInstance(serviceStack, CONSTRUCT_NAME, awsEnvironment,
+                                        applicationEnvironment, inputParameters,
+                                        networkOutputParameters);
 
     app.synth();
   }
@@ -98,6 +107,8 @@ public class AECServiceDeployer {
 
   private static Map<String, String> environmentVariables(Construct scope, String springProfile,
                                                           String environmentName,
+                                                          String appListenPort,
+                                                          String appManagementPort,
                                                           Database.OutputParameters dbOutput) {
     var dbEndpointAddress = dbOutput.getEndpointAddress();
     var dbEndpointPort = dbOutput.getEndpointPort();
@@ -114,14 +125,18 @@ public class AECServiceDeployer {
                   CORE_APP_DB_USER, dbUsername,
                   CORE_APP_DB_PASSWORD, dbPassword,
                   CORE_APP_DB_DRIVER, CORE_APP_DB_DRIVER_POSTGRES,
+                  CORE_APP_LISTEN_PORT, appListenPort,
+                  CORE_APP_MANAGEMENT_PORT, appManagementPort,
                   ENVIRONMENT_NAME, environmentName);
   }
 
-  private static AECService.InputParameters inputParameters(AECService.DockerImage dockerImage,
-                                                            Map<String, String> envVariables,
-                                                            List<String> secGIdsGrantIngressFEcs) {
-    var inputParameters = AECService.newInputParameters(dockerImage, envVariables,
-                                                        secGIdsGrantIngressFEcs);
+  private static ElasticContainerService.InputParameters inputParameters(
+      ElasticContainerService.DockerImage dockerImage,
+      Map<String, String> envVariables,
+      List<String> secGIdsGrantIngressFEcs
+                                                                        ) {
+    var inputParameters = ElasticContainerService.newInputParameters(dockerImage, envVariables,
+                                                                     secGIdsGrantIngressFEcs);
     inputParameters.setTaskRolePolicyStatements(taskRolePolicyStatements());
     inputParameters.setHealthCheckPath("/actuator/health");
     inputParameters.setAwsLogsDateTimeFormat("%Y-%m-%dT%H:%M:%S.%f%z");
