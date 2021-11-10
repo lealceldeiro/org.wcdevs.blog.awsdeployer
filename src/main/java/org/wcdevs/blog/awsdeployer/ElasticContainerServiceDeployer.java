@@ -43,13 +43,15 @@ public class ElasticContainerServiceDeployer {
     String dockerRepositoryName = Util.getValueInApp("dockerRepositoryName", app, false);
     String dockerImageTag = Util.getValueInApp("dockerImageTag", app, false);
     String dockerImageUrl = Util.getValueInApp("dockerImageUrl", app, false);
-    var appListenPort = Optional.ofNullable(Util.<String>getValueInApp("appPort", app, false))
-                                .orElse("8080");
+
+    String appPort = Util.getValueInApp("appPort", app, false);
+    var appListenPort = Optional.ofNullable(appPort).orElse("8080");
+
     String healthCheckPath = Util.getValueInApp("healthCheckPath", app, false);
     var appHealthCheckPath = Optional.ofNullable(healthCheckPath).orElse("/");
 
-    Integer healthCheckPort = Util.getValueInApp("healthCheckPort", app, false);
-    int appHealthCheckPort = Optional.ofNullable(healthCheckPort).orElse(8080);
+    String healthCheckPort = Util.getValueInApp("healthCheckPort", app, false);
+    var appHealthCheckPort = Optional.ofNullable(healthCheckPort).orElse("8080");
 
     var awsEnvironment = Util.environmentFrom(accountId, region);
     var applicationEnvironment = new ApplicationEnvironment(applicationName, environmentName);
@@ -67,8 +69,9 @@ public class ElasticContainerServiceDeployer {
 
     var dockerImage = ElasticContainerService.newDockerImage(dockerRepositoryName, dockerImageTag,
                                                              dockerImageUrl);
-    var inputParameters = inputParameters(dockerImage, environmentVariables, appHealthCheckPath,
-                                          appHealthCheckPort, secGroupIdsToGrantIngressFromEcs);
+    var inputParameters = inputParameters(dockerImage, environmentVariables, appPort,
+                                          appHealthCheckPath, appHealthCheckPort,
+                                          secGroupIdsToGrantIngressFromEcs);
 
     var networkOutputParameters = Network.outputParametersFrom(serviceStack, environmentName);
 
@@ -111,7 +114,7 @@ public class ElasticContainerServiceDeployer {
   private static Map<String, String> environmentVariables(Construct scope, String springProfile,
                                                           String environmentName,
                                                           String appListenPort,
-                                                          int appHealthCheckPort,
+                                                          String appHealthCheckPort,
                                                           Database.OutputParameters dbOutput) {
     var dbEndpointAddress = dbOutput.getEndpointAddress();
     var dbEndpointPort = dbOutput.getEndpointPort();
@@ -129,23 +132,36 @@ public class ElasticContainerServiceDeployer {
                   CORE_APP_DB_PASSWORD, dbPassword,
                   CORE_APP_DB_DRIVER, CORE_APP_DB_DRIVER_POSTGRES,
                   CORE_APP_LISTEN_PORT, appListenPort,
-                  CORE_APP_MANAGEMENT_PORT, String.valueOf(appHealthCheckPort),
+                  CORE_APP_MANAGEMENT_PORT, appHealthCheckPort,
                   ENVIRONMENT_NAME, environmentName);
   }
 
   private static ElasticContainerService.InputParameters inputParameters(
       ElasticContainerService.DockerImage dockerImage, Map<String, String> envVariables,
-      String healthCheckPath, int healthCheckPort, List<String> secGIdsGrantIngressFEcs
+      String appPort, String healthCheckPath, String healthCheckPort,
+      List<String> secGIdsGrantIngressFEcs
                                                                         ) {
+    var defaultPort = 8080;
+
     var inputParameters = ElasticContainerService.newInputParameters(dockerImage, envVariables,
                                                                      secGIdsGrantIngressFEcs);
     inputParameters.setTaskRolePolicyStatements(taskRolePolicyStatements());
+    inputParameters.setApplicationPort(intValueFrom(appPort, defaultPort));
+    inputParameters.setHealthCheckPort(intValueFrom(healthCheckPort, defaultPort));
     inputParameters.setHealthCheckPath(healthCheckPath);
-    inputParameters.setHealthCheckPort(healthCheckPort);
     inputParameters.setAwsLogsDateTimeFormat("%Y-%m-%dT%H:%M:%S.%f%z");
     inputParameters.setHealthCheckIntervalSeconds(45);
 
     return inputParameters;
+  }
+
+  private static int intValueFrom(String rawValue, int defaultIfError) {
+    try {
+      return Integer.parseInt(rawValue);
+    } catch (Exception ignored) {
+      // let's use the default one
+    }
+    return defaultIfError;
   }
 
   private static List<PolicyStatement> taskRolePolicyStatements() {
