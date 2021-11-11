@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public class ElasticContainerServiceDeployer {
   private static final String CONSTRUCT_NAME = "ECServiceApp";
@@ -43,15 +42,9 @@ public class ElasticContainerServiceDeployer {
     String dockerRepositoryName = Util.getValueInApp("dockerRepositoryName", app, false);
     String dockerImageTag = Util.getValueInApp("dockerImageTag", app, false);
     String dockerImageUrl = Util.getValueInApp("dockerImageUrl", app, false);
-
-    String appPort = Util.getValueInApp("appPort", app, false);
-    var appListenPort = Optional.ofNullable(appPort).orElse("8080");
-
-    String healthCheckPath = Util.getValueInApp("healthCheckPath", app, false);
-    var appHealthCheckPath = Optional.ofNullable(healthCheckPath).orElse("/");
-
-    String healthCheckPort = Util.getValueInApp("healthCheckPort", app, false);
-    var appHealthCheckPort = Optional.ofNullable(healthCheckPort).orElse("8080");
+    var appListenPort = Util.getValueOrDefault("appPort", app, "8080");
+    var appHealthCheckPath = Util.getValueOrDefault("healthCheckPath", app, "/");
+    var appHealthCheckPort = Util.getValueOrDefault("healthCheckPort", app, "8080");
 
     var awsEnvironment = Util.environmentFrom(accountId, region);
     var applicationEnvironment = new ApplicationEnvironment(applicationName, environmentName);
@@ -69,7 +62,7 @@ public class ElasticContainerServiceDeployer {
 
     var dockerImage = ElasticContainerService.newDockerImage(dockerRepositoryName, dockerImageTag,
                                                              dockerImageUrl);
-    var inputParameters = inputParameters(dockerImage, environmentVariables, appPort,
+    var inputParameters = inputParameters(dockerImage, environmentVariables, appListenPort,
                                           appHealthCheckPath, appHealthCheckPort,
                                           secGroupIdsToGrantIngressFromEcs);
 

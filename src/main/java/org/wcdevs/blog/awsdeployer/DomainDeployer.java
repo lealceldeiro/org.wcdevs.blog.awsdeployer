@@ -5,8 +5,6 @@ import org.wcdevs.blog.cdk.DomainStack;
 import org.wcdevs.blog.cdk.Util;
 import software.amazon.awscdk.core.App;
 
-import java.util.Optional;
-
 public class DomainDeployer {
   private static final String CONSTRUCT_NAME = "DomainApp";
 
@@ -19,8 +17,7 @@ public class DomainDeployer {
     String region = Util.getValueInApp("region", app);
     String hostedZoneDomain = Util.getValueInApp("hostedZoneDomain", app);
     String applicationDomain = Util.getValueInApp("applicationDomain", app);
-    Boolean sslActivated = Util.getValueInApp("isSslActivated", app, false);
-    boolean isSslActivated = Optional.ofNullable(sslActivated).orElse(true);
+    var isSslActivated = Util.getValueOrDefault("isSslActivated", app, false);
 
     var awsEnvironment = Util.environmentFrom(accountId, region);
     var appEnvironment = new ApplicationEnvironment(applicationName, environmentName);
