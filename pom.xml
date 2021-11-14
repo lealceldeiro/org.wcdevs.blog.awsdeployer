@@ -11,11 +11,11 @@
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <cdk.version>1.130.0</cdk.version>
+    <cdk.version>1.131.0</cdk.version>
     <junit.version>5.8.1</junit.version>
     <mockito.version>4.0.0</mockito.version>
     <passay.version>1.6.1</passay.version>
-    <cdk-constructs.version>1.1.2</cdk-constructs.version>
+    <cdk-constructs.version>1.2.0</cdk-constructs.version>
   </properties>
 
   <dependencies>
