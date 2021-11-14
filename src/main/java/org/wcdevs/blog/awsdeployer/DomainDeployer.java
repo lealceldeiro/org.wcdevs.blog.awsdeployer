@@ -17,17 +17,12 @@ public class DomainDeployer {
     String region = Util.getValueInApp("region", app);
     String hostedZoneDomain = Util.getValueInApp("hostedZoneDomain", app);
     String applicationDomain = Util.getValueInApp("applicationDomain", app);
-    var isSslActivated = Util.getValueOrDefault("isSslActivated", app, false);
 
     var awsEnvironment = Util.environmentFrom(accountId, region);
     var appEnvironment = new ApplicationEnvironment(applicationName, environmentName);
 
-    var inputParams = DomainStack.InputParameters.builder()
-                                                 .sslCertificateActivated(isSslActivated)
-                                                 .build();
-
     DomainStack.newInstance(app, CONSTRUCT_NAME, awsEnvironment, appEnvironment, hostedZoneDomain,
-                            applicationDomain, inputParams);
+                            applicationDomain);
     app.synth();
   }
 }
