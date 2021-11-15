@@ -1,13 +1,18 @@
-name: 00 - Bootstrap the AWS CDK
+name: 01 - Setup the environment
 
 on:
   workflow_dispatch:
+    inputs:
+      applicationName:
+        description: 'The name of the application for which to set-up the environment.'
+        required: true
+        default: 'orgwcdevsblogcore'
 
 jobs:
-  bootstrap-cdk-setup:
+  set-up-resources:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    name: Bootstrap CDK setup and Deploy the Deployment Sequencer AWS Lambda Function
+    name: Setup resources
 
     steps:
       - name: Checkout code
@@ -28,20 +33,14 @@ jobs:
       - name: NPM install
         run: npm i
 
-      - name: Deploy CDK Bootstrap Stack and Deployment Sequencer AWS Lambda Function
+      - name: Deploy Docker repository
+        if: github.ref == 'refs/heads/main'
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEPLOY_REGION }}
-          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
         run: |
-          npm run bootstrap
-          cd deployment-sequencer-lambda
-          npm install
-          npm run dist
-          cd ..
-          npm run deployment-sequencer:deploy -- \
-            -c applicationName=orgwcdevsblog \
+          npm run repository:deploy -- \
+            -c applicationName=${{ github.event.inputs.applicationName }} \
             -c accountId=${{ secrets.AWS_ACCOUNT_ID }} \
-            -c region=${{ secrets.AWS_DEPLOY_REGION }} \
-            -c githubToken=${{ secrets.GH_API_TOKEN }}
+            -c region=${{ secrets.AWS_DEPLOY_REGION }}
