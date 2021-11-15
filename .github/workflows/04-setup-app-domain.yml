@@ -2,11 +2,7 @@ name: 04 - Manually trigger the app domain setup
 
 on:
   workflow_dispatch:
-    inputs:
-      environmentName:
-        description: 'The name of the environment in which to set-up the app domain.'
-        required: true
-        default: 'staging'
+
 jobs:
   deploy-api-domain:
     if: github.ref == 'refs/heads/main'
