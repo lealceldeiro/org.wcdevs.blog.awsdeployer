@@ -15,7 +15,7 @@
     <junit.version>5.8.1</junit.version>
     <mockito.version>4.0.0</mockito.version>
     <passay.version>1.6.1</passay.version>
-    <cdk-constructs.version>1.2.0</cdk-constructs.version>
+    <cdk-constructs.version>1.2.1</cdk-constructs.version>
   </properties>
 
   <dependencies>
