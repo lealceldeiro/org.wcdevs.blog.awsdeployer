@@ -1,21 +1,20 @@
-name: 04 - Manually trigger the app domain setup
+name: 02 - Create the shared environment
 
 on:
   workflow_dispatch:
     inputs:
       environmentName:
-        description: 'The name of the environment in which to set-up the app domain.'
+        description: 'The name of the environment to be created.'
         required: true
         default: 'staging'
       applicationName:
-        description: 'The name of the application for which to set-up the domain.'
-        required: true
-        default: 'orgwcdevsblogcore'
+        description: 'The name of the application for which the environment is going to be created.'
+        required: false
 jobs:
-  deploy-api-domain:
+  deploy-network-stack:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    name: Deploy the application domain setup resources
+    name: Deploy the network stack
 
     steps:
       - name: Checkout code
@@ -36,16 +35,14 @@ jobs:
       - name: NPM install
         run: npm i
 
-      - name: Setup domain resources
+      - name: Deploy network stack
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEPLOY_REGION }}
         run: |
-          npm run domain:deploy -- \
-            -c accountId=${{ secrets.AWS_ACCOUNT_ID }} \
-            -c region=${{ secrets.AWS_DEPLOY_REGION }} \
+          npm run network:deploy -- \
             -c environmentName=${{ github.event.inputs.environmentName }} \
-            -c hostedZoneDomain=${{ secrets.HOSTED_ZONE_DOMAIN }} \
-            -c applicationDomain=${{ secrets.APPLICATION_DOMAIN }} \
-            -c applicationName=${{ github.event.inputs.applicationName }}
+            -c applicationName=${{ github.event.inputs.applicationName }} \
+            -c accountId=${{ secrets.AWS_ACCOUNT_ID }} \
+            -c region=${{ secrets.AWS_DEPLOY_REGION }}

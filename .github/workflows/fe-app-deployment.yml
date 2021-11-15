@@ -1,4 +1,4 @@
-name: Core Application Deployment
+name: FE Application Deployment
 
 on:
   workflow_dispatch:

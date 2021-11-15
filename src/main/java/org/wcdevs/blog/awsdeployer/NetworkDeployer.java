@@ -15,15 +15,21 @@ public class NetworkDeployer {
     String environmentName = Util.getValueInApp("environmentName", app);
     String accountId = Util.getValueInApp("accountId", app);
     String region = Util.getValueInApp("region", app);
+    String applicationName = Util.getValueInApp("applicationName", app, false);
     String sslCertificate = Util.getValueInApp("sslCertificate", app, false);
+    int internalPort = Util.getValueOrDefault("appInternalPort", app, 8080);
+    int externalPort = Util.getValueOrDefault("appExternalPort", app, 80);
     var stackProps = StackProps.builder()
                                .stackName(Util.joinedString("-", environmentName, CONSTRUCT_NAME))
                                .env(Util.environmentFrom(accountId, region))
                                .build();
     var stack = new Stack(app, "NetworkStack", stackProps);
 
-    var inputParams = Network.InputParameters.builder().sslCertificateArn(sslCertificate).build();
-    Network.newInstance(stack, CONSTRUCT_NAME, environmentName, inputParams);
+    var inputParams = Network.InputParameters.builder()
+                                             .listeningInternalHttpPort(internalPort)
+                                             .listeningExternalHttpPort(externalPort)
+                                             .sslCertificateArn(sslCertificate).build();
+    Network.newInstance(stack, CONSTRUCT_NAME, environmentName, /*applicationName,*/ inputParams);
 
     app.synth();
   }

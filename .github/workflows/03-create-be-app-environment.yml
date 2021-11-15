@@ -1,19 +1,21 @@
-# # One-off run. Environment-specific resources
-# - Create network
-name: 02 - Manually create a shared environment
+name: 03 - Create the BE application environment
 
 on:
   workflow_dispatch:
     inputs:
       environmentName:
-        description: 'The name of the environment to be created.'
+        description: 'The name of the environment in which to deploy the app-specific environment resources.'
         required: true
         default: 'staging'
+      applicationName:
+        description: 'The name of the application for which to set-up the environment.'
+        required: true
+        default: 'orgwcdevsblogcore'
 jobs:
-  deploy-network-stack:
+  deploy-database-stack:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    name: Deploy the network stack
+    name: Deploy the database stack
 
     steps:
       - name: Checkout code
@@ -34,10 +36,14 @@ jobs:
       - name: NPM install
         run: npm i
 
-      - name: Deploy network stack
+      - name: Deploy database stack
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEPLOY_REGION }}
         run: |
-          npm run network:deploy -- -c environmentName=${{ github.event.inputs.environmentName }} -c accountId=${{ secrets.AWS_ACCOUNT_ID }} -c region=${{ secrets.AWS_DEPLOY_REGION }}
+          npm run database:deploy -- \
+            -c environmentName=${{ github.event.inputs.environmentName }} \
+            -c applicationName=${{ github.event.inputs.applicationName }} \
+            -c accountId=${{ secrets.AWS_ACCOUNT_ID }} \
+            -c region=${{ secrets.AWS_DEPLOY_REGION }}
