@@ -66,7 +66,8 @@ public class ElasticContainerServiceDeployer {
                                           appHealthCheckPath, appHealthCheckPort,
                                           secGroupIdsToGrantIngressFromEcs);
 
-    var networkOutputParameters = Network.outputParametersFrom(serviceStack, environmentName);
+    var networkOutputParameters = Network.outputParametersFrom(serviceStack,
+                                                               applicationEnvironment);
 
     ElasticContainerService.newInstance(serviceStack, CONSTRUCT_NAME, awsEnvironment,
                                         applicationEnvironment, inputParameters,
