@@ -18,8 +18,8 @@ import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
 
-public class ElasticContainerServiceDeployer {
-  private static final String CONSTRUCT_NAME = "ECServiceApp";
+public class BEElasticContainerServiceDeployer {
+  private static final String CONSTRUCT_NAME = "BEECServiceApp";
 
   private static final String SPRING_PROFILES_ACTIVE = "SPRING_PROFILES_ACTIVE";
   private static final String CORE_APP_DB_URL = "CORE_APP_DB_URL";
@@ -30,7 +30,7 @@ public class ElasticContainerServiceDeployer {
   private static final String CORE_APP_LISTEN_PORT = "CORE_APP_LISTEN_PORT";
   private static final String CORE_APP_MANAGEMENT_PORT = "CORE_APP_MANAGEMENT_PORT";
   private static final String ENVIRONMENT_NAME = "ENVIRONMENT_NAME";
-  private static final String SERVICE_STACK_NAME = "service-stack";
+  private static final String SERVICE_STACK_NAME = "be-service-stack";
 
   public static void main(String[] args) {
     var app = new App();
@@ -93,14 +93,15 @@ public class ElasticContainerServiceDeployer {
   private static String getTimeId() {
     long timestamp = System.currentTimeMillis();
     var utc = LocalDateTime.now(ZoneId.of("UTC"));
-    return Util.joinedString("-", utc.getYear(), utc.getMonthValue(), utc.getDayOfMonth(),
-                             utc.getHour(), utc.getMinute(), utc.getSecond(), timestamp);
+    return Util.joinedString(Util.DASH_JOINER, utc.getYear(), utc.getMonthValue(),
+                             utc.getDayOfMonth(), utc.getHour(), utc.getMinute(), utc.getSecond(),
+                             timestamp);
   }
 
   private static Stack serviceStack(App app, ApplicationEnvironment applicationEnvironment,
                                     Environment awsEnvironment) {
     var serviceStackName = applicationEnvironment.prefixed(SERVICE_STACK_NAME);
-    return new Stack(app, "ServiceStack", StackProps.builder()
+    return new Stack(app, "BEServiceStack", StackProps.builder()
                                                     .stackName(serviceStackName)
                                                     .env(awsEnvironment)
                                                     .build());

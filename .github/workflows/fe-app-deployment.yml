@@ -43,7 +43,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEPLOY_REGION }}
         run: |
-          npm run service:deploy -- \
+          npm run service:deploy:fe -- \
             -c accountId=${{ secrets.AWS_ACCOUNT_ID }} \
             -c region=${{ secrets.AWS_DEPLOY_REGION }} \
             -c environmentName=${{ github.event.inputs.environment }} \
