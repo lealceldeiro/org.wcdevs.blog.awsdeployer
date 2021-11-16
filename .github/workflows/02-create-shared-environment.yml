@@ -16,7 +16,7 @@ on:
         required: false
         default: '8080'
       applicationExternalListeningPort:
-        description: 'The external (internet facing) port used by the application to listen for requests.'
+        description: 'The external (internet facing) port used by the application to listen for requests. (IT MUST BE A FREE PORT)'
         required: false
         default: '80'
 jobs:
