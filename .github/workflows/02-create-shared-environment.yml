@@ -10,6 +10,15 @@ on:
       applicationName:
         description: 'The name of the application for which the environment is going to be created.'
         required: false
+        default: 'default'
+      applicationInternalListeningPort:
+        description: 'The internal (container) port used by the application to listen for requests.'
+        required: false
+        default: '8080'
+      applicationExternalListeningPort:
+        description: 'The external (internet facing) port used by the application to listen for requests.'
+        required: false
+        default: '80'
 jobs:
   deploy-network-stack:
     if: github.ref == 'refs/heads/main'
@@ -44,5 +53,7 @@ jobs:
           npm run network:deploy -- \
             -c environmentName=${{ github.event.inputs.environmentName }} \
             -c applicationName=${{ github.event.inputs.applicationName }} \
+            -c appInternalPort=${{ github.event.inputs.applicationInternalListeningPort }} \
+            -c appExternalPort=${{ github.event.inputs.applicationExternalListeningPort }} \
             -c accountId=${{ secrets.AWS_ACCOUNT_ID }} \
             -c region=${{ secrets.AWS_DEPLOY_REGION }}
