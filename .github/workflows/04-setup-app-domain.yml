@@ -14,11 +14,11 @@ on:
       hostedZoneDomain:
         description: 'The name of the hosted zone where the application will live.'
         required: true
-        default: ${{ secrets.CORE_HOSTED_ZONE_DOMAIN }}
+        default: wcdevs.org
       applicationDomain:
         description: 'The domain to which the application will be associated to.'
         required: true
-        default: ${{ secrets.CORE_APPLICATION_DOMAIN }}
+        default: wcdevs.org
 jobs:
   deploy-api-domain:
     if: github.ref == 'refs/heads/main'
