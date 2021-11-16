@@ -10,7 +10,7 @@ on:
       applicationName:
         description: 'The name of the application for which the environment is going to be created.'
         required: false
-        default: 'default'
+        default: 'core'
       applicationInternalListeningPort:
         description: 'The internal (container) port used by the application to listen for requests.'
         required: false

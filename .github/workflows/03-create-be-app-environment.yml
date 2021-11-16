@@ -10,7 +10,7 @@ on:
       applicationName:
         description: 'The name of the application for which to set-up the environment.'
         required: true
-        default: 'orgwcdevsblogcore'
+        default: 'core'
 jobs:
   deploy-database-stack:
     if: github.ref == 'refs/heads/main'
