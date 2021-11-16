@@ -30,6 +30,7 @@ public class ElasticContainerServiceDeployer {
   private static final String CORE_APP_LISTEN_PORT = "CORE_APP_LISTEN_PORT";
   private static final String CORE_APP_MANAGEMENT_PORT = "CORE_APP_MANAGEMENT_PORT";
   private static final String ENVIRONMENT_NAME = "ENVIRONMENT_NAME";
+  private static final String SERVICE_STACK_NAME = "service-stack";
 
   public static void main(String[] args) {
     var app = new App();
@@ -79,10 +80,14 @@ public class ElasticContainerServiceDeployer {
   private static Stack parametersStack(App app, ApplicationEnvironment applicationEnvironment,
                                        Environment awsEnvironment) {
     var timeId = getTimeId();
-    var paramsStackName = applicationEnvironment.prefixed("parameters-service-stack" + timeId);
+    var pStackName = Util.joinedString(Util.DASH_JOINER, "parameters", SERVICE_STACK_NAME, timeId);
+    var prefixedParamsStackName = applicationEnvironment.prefixed(pStackName);
 
-    return new Stack(app, "parameters-service-stack" + timeId,
-                     StackProps.builder().stackName(paramsStackName).env(awsEnvironment).build());
+    return new Stack(app, prefixedParamsStackName + timeId,
+                     StackProps.builder()
+                               .stackName(prefixedParamsStackName)
+                               .env(awsEnvironment)
+                               .build());
   }
 
   private static String getTimeId() {
@@ -94,7 +99,7 @@ public class ElasticContainerServiceDeployer {
 
   private static Stack serviceStack(App app, ApplicationEnvironment applicationEnvironment,
                                     Environment awsEnvironment) {
-    var serviceStackName = applicationEnvironment.prefixed("service-stack");
+    var serviceStackName = applicationEnvironment.prefixed(SERVICE_STACK_NAME);
     return new Stack(app, "ServiceStack", StackProps.builder()
                                                     .stackName(serviceStackName)
                                                     .env(awsEnvironment)

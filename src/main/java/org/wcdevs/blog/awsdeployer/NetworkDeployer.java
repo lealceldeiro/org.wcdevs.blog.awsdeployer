@@ -21,14 +21,14 @@ public class NetworkDeployer {
     String sslCertificate = Util.getValueInApp("sslCertificate", app, false);
     var internalPort = Util.getValueOrDefault("appInternalPort", app, "8080");
     var externalPort = Util.getValueOrDefault("appExternalPort", app, "80");
+    var appEnv = new ApplicationEnvironment(applicationName, environmentName);
 
     var stackProps = StackProps.builder()
-                               .stackName(Util.joinedString("-", environmentName, CONSTRUCT_NAME))
+                               .stackName(appEnv.prefixed(CONSTRUCT_NAME))
                                .env(Util.environmentFrom(accountId, region))
                                .build();
     var stack = new Stack(app, "NetworkStack", stackProps);
 
-    var appEnv = new ApplicationEnvironment(applicationName, environmentName);
     var listeningInternalPort = intOrDefault(internalPort, 8080);
     var listeningExternalPort = intOrDefault(externalPort, 80);
     var inputParams = Network.InputParameters.builder()

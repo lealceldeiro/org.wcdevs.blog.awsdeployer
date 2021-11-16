@@ -1,4 +1,4 @@
-name: 04 - Manually trigger the app domain setup
+name: 04 - Setup application domain
 
 on:
   workflow_dispatch:
