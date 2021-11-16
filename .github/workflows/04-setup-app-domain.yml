@@ -11,6 +11,14 @@ on:
         description: 'The name of the application for which to set-up the domain.'
         required: true
         default: 'core'
+      hostedZoneDomain:
+        description: 'The name of the hosted zone where the application will live.'
+        required: true
+        default: ${{ secrets.CORE_HOSTED_ZONE_DOMAIN }}
+      applicationDomain:
+        description: 'The domain to which the application will be associated to.'
+        required: true
+        default: ${{ secrets.CORE_APPLICATION_DOMAIN }}
 jobs:
   deploy-api-domain:
     if: github.ref == 'refs/heads/main'
@@ -46,6 +54,6 @@ jobs:
             -c accountId=${{ secrets.AWS_ACCOUNT_ID }} \
             -c region=${{ secrets.AWS_DEPLOY_REGION }} \
             -c environmentName=${{ github.event.inputs.environmentName }} \
-            -c hostedZoneDomain=${{ secrets.HOSTED_ZONE_DOMAIN }} \
-            -c applicationDomain=${{ secrets.APPLICATION_DOMAIN }} \
+            -c hostedZoneDomain=${{ github.event.inputs.hostedZoneDomain }} \
+            -c applicationDomain=${{ github.event.inputs.applicationDomain }} \
             -c applicationName=${{ github.event.inputs.applicationName }}
