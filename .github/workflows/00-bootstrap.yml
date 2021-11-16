@@ -1,19 +1,13 @@
-# # One-off run. Environment-specific resources
-# - Create network
-name: 02 - Manually create a shared environment
+name: 00 - Bootstrap the AWS CDK
 
 on:
   workflow_dispatch:
-    inputs:
-      environmentName:
-        description: 'The name of the environment to be created.'
-        required: true
-        default: 'staging'
+
 jobs:
-  deploy-network-stack:
+  bootstrap-cdk-setup:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    name: Deploy the network stack
+    name: Bootstrap CDK setup and Deploy the Deployment Sequencer AWS Lambda Function
 
     steps:
       - name: Checkout code
@@ -34,10 +28,20 @@ jobs:
       - name: NPM install
         run: npm i
 
-      - name: Deploy network stack
+      - name: Deploy CDK Bootstrap Stack and Deployment Sequencer AWS Lambda Function
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEPLOY_REGION }}
+          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
         run: |
-          npm run network:deploy -- -c environmentName=${{ github.event.inputs.environmentName }} -c accountId=${{ secrets.AWS_ACCOUNT_ID }} -c region=${{ secrets.AWS_DEPLOY_REGION }}
+          npm run bootstrap
+          cd deployment-sequencer-lambda
+          npm install
+          npm run dist
+          cd ..
+          npm run deployment-sequencer:deploy -- \
+            -c applicationName=orgwcdevsblog \
+            -c accountId=${{ secrets.AWS_ACCOUNT_ID }} \
+            -c region=${{ secrets.AWS_DEPLOY_REGION }} \
+            -c githubToken=${{ secrets.GH_API_TOKEN }}

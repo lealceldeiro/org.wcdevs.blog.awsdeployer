@@ -1,16 +1,18 @@
-# One-off run. Deployments:
-# - Bootstrap CDK
-# - ECR Docker Repository
-
-name: 01 - Manually bootstrap the CDK Environment
+name: 01 - Setup the environment
 
 on:
-  workflow_dispatch
+  workflow_dispatch:
+    inputs:
+      applicationName:
+        description: 'The name of the application for which to set-up the environment.'
+        required: true
+        default: 'orgwcdevsblogcore'
 
 jobs:
-  deploy:
+  set-up-resources:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    name: Bootstrap CDK setup
+    name: Setup resources
 
     steps:
       - name: Checkout code
@@ -31,15 +33,6 @@ jobs:
       - name: NPM install
         run: npm i
 
-      - name: Deploy CDK bootstrap stack
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEPLOY_REGION }}
-          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
-        run: |
-          npm run bootstrap
-
       - name: Deploy Docker repository
         if: github.ref == 'refs/heads/main'
         env:
@@ -47,4 +40,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEPLOY_REGION }}
         run: |
-          npm run repository:deploy -- -c accountId=${{ secrets.AWS_ACCOUNT_ID }} -c region=${{ secrets.AWS_DEPLOY_REGION }}
+          npm run repository:deploy -- \
+            -c applicationName=${{ github.event.inputs.applicationName }} \
+            -c accountId=${{ secrets.AWS_ACCOUNT_ID }} \
+            -c region=${{ secrets.AWS_DEPLOY_REGION }}

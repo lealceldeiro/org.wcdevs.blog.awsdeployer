@@ -38,7 +38,7 @@ public class ElasticContainerServiceDeployer {
     String accountId = Util.getValueInApp("accountId", app);
     String region = Util.getValueInApp("region", app);
     String applicationName = Util.getValueInApp("applicationName", app);
-    String springProfile = Util.getValueInApp("springProfile", app);
+    var springProfile = Util.getValueOrDefault("springProfile", app, "aws");
     String dockerRepositoryName = Util.getValueInApp("dockerRepositoryName", app, false);
     String dockerImageTag = Util.getValueInApp("dockerImageTag", app, false);
     String dockerImageUrl = Util.getValueInApp("dockerImageUrl", app, false);
@@ -66,7 +66,8 @@ public class ElasticContainerServiceDeployer {
                                           appHealthCheckPath, appHealthCheckPort,
                                           secGroupIdsToGrantIngressFromEcs);
 
-    var networkOutputParameters = Network.outputParametersFrom(serviceStack, environmentName);
+    var networkOutputParameters = Network.outputParametersFrom(serviceStack,
+                                                               applicationEnvironment);
 
     ElasticContainerService.newInstance(serviceStack, CONSTRUCT_NAME, awsEnvironment,
                                         applicationEnvironment, inputParameters,
