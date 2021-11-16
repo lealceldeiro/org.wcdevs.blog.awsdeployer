@@ -11,7 +11,6 @@ import software.amazon.awscdk.core.StackProps;
 import software.amazon.awscdk.services.iam.Effect;
 import software.amazon.awscdk.services.iam.PolicyStatement;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -79,10 +78,9 @@ public class FEElasticContainerServiceDeployer {
       ElasticContainerService.DockerImage dockerImage, Map<String, String> envVariables,
       String appPort, String healthCheckPath, String healthCheckPort
                                                                         ) {
-    var defaultPort = 8080;
+    var defaultPort = 3000;
 
-    var inputParameters = ElasticContainerService.newInputParameters(dockerImage, envVariables,
-                                                                     Collections.emptyList());
+    var inputParameters = ElasticContainerService.newInputParameters(dockerImage, envVariables);
     inputParameters.setTaskRolePolicyStatements(taskRolePolicyStatements());
     inputParameters.setApplicationPort(intValueFrom(appPort, defaultPort));
     inputParameters.setHealthCheckPort(intValueFrom(healthCheckPort, defaultPort));
