@@ -53,6 +53,7 @@ jobs:
           npm run network:deploy -- \
             -c environmentName=${{ github.event.inputs.environmentName }} \
             -c applicationName=${{ github.event.inputs.applicationName }} \
+            -c sslCertificate=${{ secrets.SSL_CERTIFICATE }}
             -c appInternalPort=${{ github.event.inputs.applicationInternalListeningPort }} \
             -c appExternalPort=${{ github.event.inputs.applicationExternalListeningPort }} \
             -c accountId=${{ secrets.AWS_ACCOUNT_ID }} \
