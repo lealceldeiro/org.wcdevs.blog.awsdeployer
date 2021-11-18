@@ -162,11 +162,11 @@ public class BEElasticContainerServiceDeployer {
                          entry(ENVIRONMENT_NAME, environmentName),
                          entry(SPRING_PROFILES_ACTIVE, springProfile),
 
-                         entry(COGNITO_PROVIDER_URL, cogOutput.getProviderUrl())),
-    entry(COGNITO_CLIENT_ID, cogOutput.getUserPoolClientId()),
-        entry(COGNITO_CLIENT_NAME, cogOutput.getUserPoolClientName(),
-              entry(COGNITO_CLIENT_SECRET, cognitoClientSecretValue),
-              entry(AWS_REGION, awsRegion));
+                         entry(COGNITO_PROVIDER_URL, cogOutput.getProviderUrl()),
+                         entry(COGNITO_CLIENT_ID, cogOutput.getUserPoolClientId()),
+                         entry(COGNITO_CLIENT_NAME, cogOutput.getUserPoolClientName()),
+                         entry(COGNITO_CLIENT_SECRET, cognitoClientSecretValue),
+                         entry(AWS_REGION, awsRegion));
   }
 
   private static ElasticContainerService.InputParameters inputParameters(
