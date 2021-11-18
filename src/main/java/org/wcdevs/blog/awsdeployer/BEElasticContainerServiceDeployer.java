@@ -36,9 +36,9 @@ public class BEElasticContainerServiceDeployer {
   private static final String SPRING_PROFILES_ACTIVE = "SPRING_PROFILES_ACTIVE";
 
   private static final String COGNITO_PROVIDER_URL = "COGNITO_PROVIDER_URL";
-  private static final String COGNITO_CORE_CLIENT_ID = "COGNITO_CORE_CLIENT_ID";
-  private static final String COGNITO_CORE_CLIENT_NAME = "COGNITO_CORE_CLIENT_NAME";
-  private static final String COGNITO_CORE_CLIENT_SECRET = "COGNITO_CORE_CLIENT_SECRET";
+  private static final String COGNITO_CLIENT_ID = "COGNITO_CLIENT_ID";
+  private static final String COGNITO_CLIENT_NAME = "COGNITO_CLIENT_NAME";
+  private static final String COGNITO_CLIENT_SECRET = "COGNITO_CLIENT_SECRET";
   private static final String AWS_REGION = "AWS_REGION";
 
   private static final String SERVICE_STACK_NAME = "be-service-stack";
@@ -165,9 +165,9 @@ public class BEElasticContainerServiceDeployer {
                          entry(SPRING_PROFILES_ACTIVE, springProfile),
 
                          entry(COGNITO_PROVIDER_URL, cognitoProviderUrl),
-                         entry(COGNITO_CORE_CLIENT_ID, cognitoClientId),
-                         entry(COGNITO_CORE_CLIENT_NAME, cognitoClientName),
-                         entry(COGNITO_CORE_CLIENT_SECRET, cognitoClientSecret),
+                         entry(COGNITO_CLIENT_ID, cognitoClientId),
+                         entry(COGNITO_CLIENT_NAME, cognitoClientName),
+                         entry(COGNITO_CLIENT_SECRET, cognitoClientSecret),
                          entry(AWS_REGION, awsRegion));
   }
 

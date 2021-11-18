@@ -49,9 +49,9 @@ jobs:
             -c environmentName=${{ github.event.inputs.environment }} \
             -c applicationName=${{ github.event.inputs.application-name }} \
             -c cognitoProviderUrl=${{ secrets.COGNITO_PROVIDER_URL }} \
-            -c cognitoClientId=${{ secrets.COGNITO_CORE_CLIENT_ID }} \
-            -c cognitoClientName=${{ secrets.COGNITO_CORE_CLIENT_NAME }} \
-            -c cognitoClientSecret=${{ secrets.COGNITO_CORE_CLIENT_SECRET }} \
+            -c cognitoClientId=${{ secrets.COGNITO_CLIENT_ID }} \
+            -c cognitoClientName=${{ secrets.COGNITO_CLIENT_NAME }} \
+            -c cognitoClientSecret=${{ secrets.COGNITO_CLIENT_SECRET }} \
             -c dockerRepositoryName=${{ github.event.inputs.application-name }}dockerrepository \
             -c dockerImageTag=${{ github.event.inputs.docker-image-tag }}
 
