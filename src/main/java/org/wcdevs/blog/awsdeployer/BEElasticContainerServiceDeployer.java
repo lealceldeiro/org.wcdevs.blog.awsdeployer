@@ -1,6 +1,7 @@
 package org.wcdevs.blog.awsdeployer;
 
 import org.wcdevs.blog.cdk.ApplicationEnvironment;
+import org.wcdevs.blog.cdk.CognitoStack;
 import org.wcdevs.blog.cdk.Database;
 import org.wcdevs.blog.cdk.ElasticContainerService;
 import org.wcdevs.blog.cdk.Network;
@@ -53,11 +54,6 @@ public class BEElasticContainerServiceDeployer {
     String environmentName = Util.getValueInApp("environmentName", app);
     var springProfile = Util.getValueOrDefault("springProfile", app, "aws");
 
-    String cognitoProviderUrl = Util.getValueInApp("cognitoProviderUrl", app);
-    String cognitoClientId = Util.getValueInApp("cognitoClientId", app);
-    String cognitoClientName = Util.getValueInApp("cognitoClientName", app);
-    String cognitoClientSecret = Util.getValueInApp("cognitoClientSecret", app);
-
     String dockerRepositoryName = Util.getValueInApp("dockerRepositoryName", app, false);
     String dockerImageTag = Util.getValueInApp("dockerImageTag", app, false);
     String dockerImageUrl = Util.getValueInApp("dockerImageUrl", app, false);
@@ -75,11 +71,11 @@ public class BEElasticContainerServiceDeployer {
     var dbOutputParameters = Database.outputParametersFrom(parametersStack,
                                                            applicationEnvironment);
 
-    var environmentVariables = environmentVariables(serviceStack, appListenPort, appHealthCheckPort,
-                                                    dbOutputParameters, springProfile,
-                                                    environmentName, cognitoProviderUrl,
-                                                    cognitoClientId, cognitoClientName,
-                                                    cognitoClientSecret,region);
+    var cognitoParams = CognitoStack.getOutputParameters(serviceStack, applicationEnvironment);
+
+    var environmentVariables = environmentVariables(serviceStack, environmentName, springProfile,
+                                                    region, appListenPort, appHealthCheckPort,
+                                                    dbOutputParameters, cognitoParams);
     var secGroupIdsToGrantIngressFromEcs = secGroupIdAccessFromEcs(dbOutputParameters);
 
     var dockerImage = ElasticContainerService.newDockerImage(dockerRepositoryName, dockerImageTag,
@@ -133,16 +129,13 @@ public class BEElasticContainerServiceDeployer {
   }
 
   private static Map<String, String> environmentVariables(Construct scope,
+                                                          String awsRegion,
+                                                          String environmentName,
+                                                          String springProfile,
                                                           String appListenPort,
                                                           String appHealthCheckPort,
                                                           Database.OutputParameters dbOutput,
-                                                          String environmentName,
-                                                          String springProfile,
-                                                          String cognitoProviderUrl,
-                                                          String cognitoClientId,
-                                                          String cognitoClientName,
-                                                          String cognitoClientSecret,
-                                                          String awsRegion) {
+                                                          CognitoStack.OutputParameters cogOutput) {
     var dbEndpointAddress = dbOutput.getEndpointAddress();
     var dbEndpointPort = dbOutput.getEndpointPort();
     var dbName = dbOutput.getDbName();
@@ -152,6 +145,11 @@ public class BEElasticContainerServiceDeployer {
     var dbSecret = Database.getDataBaseSecret(scope, dbOutput);
     var dbUsername = dbSecret.secretValueFromJson(Database.USERNAME_SECRET_HOLDER).toString();
     var dbPassword = dbSecret.secretValueFromJson(Database.PASSWORD_SECRET_HOLDER).toString();
+
+    var cognitoClientSecret = CognitoStack.getUserPoolClientSecret(scope, cogOutput);
+    var cognitoClientSecretValue
+        = cognitoClientSecret.secretValueFromJson(CognitoStack.USER_POOL_CLIENT_SECRET_HOLDER)
+                             .toString();
 
     return Map.ofEntries(entry(CORE_APP_DB_URL, springDataSourceUrl),
                          entry(CORE_APP_DB_USER, dbUsername),
@@ -164,11 +162,11 @@ public class BEElasticContainerServiceDeployer {
                          entry(ENVIRONMENT_NAME, environmentName),
                          entry(SPRING_PROFILES_ACTIVE, springProfile),
 
-                         entry(COGNITO_PROVIDER_URL, cognitoProviderUrl),
-                         entry(COGNITO_CLIENT_ID, cognitoClientId),
-                         entry(COGNITO_CLIENT_NAME, cognitoClientName),
-                         entry(COGNITO_CLIENT_SECRET, cognitoClientSecret),
-                         entry(AWS_REGION, awsRegion));
+                         entry(COGNITO_PROVIDER_URL, cogOutput.getProviderUrl())),
+    entry(COGNITO_CLIENT_ID, cogOutput.getUserPoolClientId()),
+        entry(COGNITO_CLIENT_NAME, cogOutput.getUserPoolClientName(),
+              entry(COGNITO_CLIENT_SECRET, cognitoClientSecretValue),
+              entry(AWS_REGION, awsRegion));
   }
 
   private static ElasticContainerService.InputParameters inputParameters(
