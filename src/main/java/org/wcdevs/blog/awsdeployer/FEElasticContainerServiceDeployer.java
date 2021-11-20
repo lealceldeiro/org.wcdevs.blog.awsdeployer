@@ -87,6 +87,7 @@ public class FEElasticContainerServiceDeployer {
     inputParameters.setHealthCheckPath(healthCheckPath);
     inputParameters.setAwsLogsDateTimeFormat("%Y-%m-%dT%H:%M:%S.%f%z");
     inputParameters.setHealthCheckIntervalSeconds(45);
+    inputParameters.setDesiredInstancesCount(1);
 
     return inputParameters;
   }
