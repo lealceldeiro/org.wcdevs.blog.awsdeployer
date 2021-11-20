@@ -146,6 +146,17 @@ public class BEElasticContainerServiceDeployer {
     var dbUsername = dbSecret.secretValueFromJson(Database.USERNAME_SECRET_HOLDER).toString();
     var dbPassword = dbSecret.secretValueFromJson(Database.PASSWORD_SECRET_HOLDER).toString();
 
+    var cognitoClientSecret = CognitoStack.getUserPoolClientSecret(scope, cogOutput);
+    var cognitoClientSecretValue
+        = cognitoClientSecret.secretValueFromJson(CognitoStack.USER_POOL_CLIENT_SECRET_HOLDER)
+                             .toString();
+    var cognitoClientId
+        = cognitoClientSecret.secretValueFromJson(CognitoStack.USER_POOL_CLIENT_ID_HOLDER)
+                             .toString();
+    var cognitoClientName
+        = cognitoClientSecret.secretValueFromJson(CognitoStack.USER_POOL_CLIENT_NAME_HOLDER)
+                             .toString();
+
     return Map.ofEntries(entry(CORE_APP_DB_URL, springDataSourceUrl),
                          entry(CORE_APP_DB_USER, dbUsername),
                          entry(CORE_APP_DB_PASSWORD, dbPassword),
@@ -158,10 +169,9 @@ public class BEElasticContainerServiceDeployer {
                          entry(SPRING_PROFILES_ACTIVE, springProfile),
 
                          entry(COGNITO_PROVIDER_URL, cogOutput.getProviderUrl()),
-                         entry(COGNITO_CLIENT_ID, cogOutput.getUserPoolClientId()),
-                         entry(COGNITO_CLIENT_NAME, cogOutput.getUserPoolClientName()),
-                         // TODO: update after cdk construct is fixed
-                         entry(COGNITO_CLIENT_SECRET, cogOutput.getUserPoolClientSecretArn()),
+                         entry(COGNITO_CLIENT_ID, cognitoClientId),
+                         entry(COGNITO_CLIENT_NAME, cognitoClientName),
+                         entry(COGNITO_CLIENT_SECRET, cognitoClientSecretValue),
                          entry(AWS_REGION, awsRegion));
   }
 

@@ -38,6 +38,7 @@ public class CognitoDeployer {
                                             .loginPageDomainPrefix(appDomainPrefix)
                                             .applicationName(applicationName)
                                             .userPoolOauthCallBackUrls(callbackUrls)
+                                            .flowImplicitCodeGrantEnabled(true)
                                             .build();
 
     CognitoStack.newInstance(app, CONSTRUCT_NAME, awsEnvironment, appEnv, input);
