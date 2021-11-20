@@ -36,6 +36,7 @@ public class CognitoDeployer {
     var input = CognitoStack.InputParameters.builder()
                                             .applicationUrl(applicationUrl)
                                             .loginPageDomainPrefix(appDomainPrefix)
+                                            .applicationName(applicationName)
                                             .userPoolOauthCallBackUrls(callbackUrls)
                                             .build();
 
