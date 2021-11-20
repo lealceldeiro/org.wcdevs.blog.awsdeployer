@@ -60,5 +60,6 @@ jobs:
             -c applicationName=${{ github.event.inputs.applicationName }} \
             -c accountId=${{ secrets.AWS_ACCOUNT_ID }} \
             -c region=${{ secrets.AWS_DEPLOY_REGION }} \
+            -c callback=${{ github.event.inputs.callback }} \
             -c applicationUrl=${{ github.event.inputs.applicationUrl }} \
             -c domainPrefix=${{ github.event.inputs.domainPrefix }}
