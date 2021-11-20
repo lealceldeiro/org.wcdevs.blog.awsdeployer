@@ -1,4 +1,6 @@
-name: 02 - Create the shared environment
+# It should be triggered once for each app to set up a network for.
+
+name: 02 - Setup network
 
 on:
   workflow_dispatch:
@@ -20,7 +22,7 @@ on:
         required: false
         default: '80'
 jobs:
-  deploy-network-stack:
+  setup-network:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     name: Deploy the network stack

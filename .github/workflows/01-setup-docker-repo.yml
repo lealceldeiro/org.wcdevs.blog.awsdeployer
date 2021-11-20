@@ -1,21 +1,20 @@
-name: 03 - Create the BE application environment
+# It should be triggered once for each app to set up a repository for.
+
+name: 01 - Setup Docker Repository
 
 on:
   workflow_dispatch:
     inputs:
-      environmentName:
-        description: 'The name of the environment in which to deploy the app-specific environment resources.'
-        required: true
-        default: 'staging'
       applicationName:
         description: 'The name of the application for which to set-up the environment.'
         required: true
         default: 'core'
+
 jobs:
-  deploy-database-stack:
+  setup-repository:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    name: Deploy the database stack
+    name: Setup resources
 
     steps:
       - name: Checkout code
@@ -36,14 +35,14 @@ jobs:
       - name: NPM install
         run: npm i
 
-      - name: Deploy database stack
+      - name: Deploy Docker repository
+        if: github.ref == 'refs/heads/main'
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEPLOY_REGION }}
         run: |
-          npm run database:deploy -- \
-            -c environmentName=${{ github.event.inputs.environmentName }} \
+          npm run repository:deploy -- \
             -c applicationName=${{ github.event.inputs.applicationName }} \
             -c accountId=${{ secrets.AWS_ACCOUNT_ID }} \
             -c region=${{ secrets.AWS_DEPLOY_REGION }}

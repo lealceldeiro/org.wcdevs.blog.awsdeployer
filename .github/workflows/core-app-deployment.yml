@@ -1,3 +1,5 @@
+# Triggered by the app deployment hosted at https://github.com/lealceldeiro/org.wcdevs.blog.core
+
 name: Core Application Deployment
 
 on:

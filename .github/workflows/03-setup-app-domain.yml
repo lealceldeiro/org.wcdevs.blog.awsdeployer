@@ -1,0 +1,61 @@
+# It should be triggered once for each app to set up a (sub)domain for.
+
+name: 04 - Setup application domain
+
+on:
+  workflow_dispatch:
+    inputs:
+      environmentName:
+        description: 'The name of the environment in which to set-up the app domain.'
+        required: true
+        default: 'staging'
+      applicationName:
+        description: 'The name of the application for which to set-up the domain.'
+        required: true
+        default: 'core'
+      hostedZoneDomain:
+        description: 'The name of the hosted zone where the application will live.'
+        required: true
+        default: wcdevs.org
+      applicationDomain:
+        description: 'The domain to which the application will be associated to.'
+        required: true
+        default: wcdevs.org
+jobs:
+  setup-domain:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    name: Deploy the application domain setup resources
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+
+      - name: Install CDK
+        run: |
+          npm i -g aws-cdk
+          echo "CKD version:"
+          cdk version
+
+      - name: NPM install
+        run: npm i
+
+      - name: Setup domain resources
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEPLOY_REGION }}
+        run: |
+          npm run domain:deploy -- \
+            -c accountId=${{ secrets.AWS_ACCOUNT_ID }} \
+            -c region=${{ secrets.AWS_DEPLOY_REGION }} \
+            -c environmentName=${{ github.event.inputs.environmentName }} \
+            -c hostedZoneDomain=${{ github.event.inputs.hostedZoneDomain }} \
+            -c applicationDomain=${{ github.event.inputs.applicationDomain }} \
+            -c applicationName=${{ github.event.inputs.applicationName }}
