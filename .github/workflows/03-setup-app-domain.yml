@@ -1,6 +1,6 @@
 # It should be triggered once for each app to set up a (sub)domain for.
 
-name: 04 - Setup application domain
+name: 03 - Setup application domain
 
 on:
   workflow_dispatch:

@@ -1,6 +1,6 @@
 # Triggered once.
 
-name: 03 - Setup Cognito
+name: 04 - Setup Cognito
 
 on:
   workflow_dispatch:

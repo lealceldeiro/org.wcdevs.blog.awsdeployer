@@ -1,6 +1,6 @@
 # Triggered once.
 
-name: 03 - Create the BE application environment
+name: 05 - Create the BE application environment
 
 on:
   workflow_dispatch:
