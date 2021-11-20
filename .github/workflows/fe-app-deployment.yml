@@ -1,4 +1,6 @@
-name: FE Application Deployment
+# Triggered by the app deployment hosted at https://github.com/lealceldeiro/org.wcdevs.blog.front
+
+name: Front-end Application Deployment
 
 on:
   workflow_dispatch:

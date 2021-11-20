@@ -1,3 +1,5 @@
+# Triggered once.
+
 name: 00 - Bootstrap the AWS CDK
 
 on:
