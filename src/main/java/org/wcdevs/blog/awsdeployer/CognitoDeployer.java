@@ -17,14 +17,16 @@ public class CognitoDeployer {
     String environmentName = Util.getValueInApp("environmentName", app);
 
     String applicationUrl = Util.getValueInApp("applicationUrl", app);
-    String domain = Util.getValueInApp("domain", app);
+    String domainPrefix = Util.getValueInApp("domainPrefix", app);
 
     var awsEnvironment = Util.environmentFrom(accountId, region);
     var appEnv = new ApplicationEnvironment(applicationName, environmentName);
 
+    var appDomainPrefix = Util.joinedString(Util.DASH_JOINER, environmentName, domainPrefix);
+
     var input = CognitoStack.InputParameters.builder()
                                             .applicationUrl(applicationUrl)
-                                            .loginPageDomainPrefix(domain)
+                                            .loginPageDomainPrefix(appDomainPrefix)
                                             .build();
 
     CognitoStack.newInstance(app, CONSTRUCT_NAME, awsEnvironment, appEnv, input);

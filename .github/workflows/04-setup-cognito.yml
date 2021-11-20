@@ -17,10 +17,10 @@ on:
         description: 'The URL the application will be associated to.'
         required: true
         default: https://wcdevs.org
-      domain:
-        description: 'The Domain (without protocol or port) the application will be associated to. It should correspond to the application url.'
+      domainPrefix:
+        description: 'The AWS login domain prefix for the application. It is the first part of the domain before .auth.[region].amazoncognito.com'
         required: true
-        default: wcdevs.org
+        default: wcdevs
 jobs:
   setup-cognito:
     if: github.ref == 'refs/heads/main'
@@ -58,4 +58,4 @@ jobs:
             -c accountId=${{ secrets.AWS_ACCOUNT_ID }} \
             -c region=${{ secrets.AWS_DEPLOY_REGION }} \
             -c applicationUrl=${{ github.event.inputs.applicationUrl }} \
-            -c domain=${{ github.event.inputs.domain }}
+            -c domainPrefix=${{ github.event.inputs.domainPrefix }}
