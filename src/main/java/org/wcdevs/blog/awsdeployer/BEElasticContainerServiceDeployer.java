@@ -70,8 +70,8 @@ public class BEElasticContainerServiceDeployer {
     var cognitoParams = CognitoStack.getOutputParameters(parametersStack, applicationEnvironment);
 
     var serviceStack = serviceStack(app, applicationEnvironment, awsEnvironment);
-    var environmentVariables = environmentVariables(serviceStack, environmentName, springProfile,
-                                                    region, appListenPort, appHealthCheckPort,
+    var environmentVariables = environmentVariables(serviceStack, region, environmentName,
+                                                    springProfile, appListenPort, appHealthCheckPort,
                                                     dbOutputParams, cognitoParams);
     var secGroupIdsToGrantIngressFromEcs = secGroupIdAccessFromEcs(dbOutputParams);
 
