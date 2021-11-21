@@ -66,17 +66,14 @@ public class BEElasticContainerServiceDeployer {
     var applicationEnvironment = new ApplicationEnvironment(applicationName, environmentName);
 
     var parametersStack = parametersStack(app, applicationEnvironment, awsEnvironment);
+    var dbOutputParams = Database.outputParametersFrom(parametersStack, applicationEnvironment);
+    var cognitoParams = CognitoStack.getOutputParameters(parametersStack, applicationEnvironment);
+
     var serviceStack = serviceStack(app, applicationEnvironment, awsEnvironment);
-
-    var dbOutputParameters = Database.outputParametersFrom(parametersStack,
-                                                           applicationEnvironment);
-
-    var cognitoParams = CognitoStack.getOutputParameters(serviceStack, applicationEnvironment);
-
     var environmentVariables = environmentVariables(serviceStack, environmentName, springProfile,
                                                     region, appListenPort, appHealthCheckPort,
-                                                    dbOutputParameters, cognitoParams);
-    var secGroupIdsToGrantIngressFromEcs = secGroupIdAccessFromEcs(dbOutputParameters);
+                                                    dbOutputParams, cognitoParams);
+    var secGroupIdsToGrantIngressFromEcs = secGroupIdAccessFromEcs(dbOutputParams);
 
     var dockerImage = ElasticContainerService.newDockerImage(dockerRepositoryName, dockerImageTag,
                                                              dockerImageUrl);
