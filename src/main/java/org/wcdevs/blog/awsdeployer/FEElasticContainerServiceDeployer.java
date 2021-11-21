@@ -45,8 +45,7 @@ public class FEElasticContainerServiceDeployer {
 
     var environmentVariables = environmentVariables(environmentName, appListenPort,
                                                     appHealthCheckPort);
-    var dockerImage = ElasticContainerService.newDockerImage(dockerRepositoryName, dockerImageTag,
-                                                             dockerImageUrl);
+    var dockerImage = dockerImage(dockerRepositoryName, dockerImageTag, dockerImageUrl);
     var inputParameters = inputParameters(dockerImage, environmentVariables, appListenPort,
                                           appHealthCheckPath, appHealthCheckPort);
 
@@ -74,22 +73,34 @@ public class FEElasticContainerServiceDeployer {
                   ENVIRONMENT_NAME, environmentName);
   }
 
+
+  private static ElasticContainerService.DockerImage dockerImage(String dockerRepositoryName,
+                                                                 String dockerImageTag,
+                                                                 String dockerImageUrl) {
+    return ElasticContainerService.DockerImage.builder()
+                                              .dockerRepositoryName(dockerRepositoryName)
+                                              .dockerImageTag(dockerImageTag)
+                                              .dockerImageUrl(dockerImageUrl)
+                                              .build();
+  }
+
   private static ElasticContainerService.InputParameters inputParameters(
       ElasticContainerService.DockerImage dockerImage, Map<String, String> envVariables,
       String appPort, String healthCheckPath, String healthCheckPort
                                                                         ) {
     var defaultPort = 3000;
 
-    var inputParameters = ElasticContainerService.newInputParameters(dockerImage, envVariables);
-    inputParameters.setTaskRolePolicyStatements(taskRolePolicyStatements());
-    inputParameters.setApplicationPort(intValueFrom(appPort, defaultPort));
-    inputParameters.setHealthCheckPort(intValueFrom(healthCheckPort, defaultPort));
-    inputParameters.setHealthCheckPath(healthCheckPath);
-    inputParameters.setAwsLogsDateTimeFormat("%Y-%m-%dT%H:%M:%S.%f%z");
-    inputParameters.setHealthCheckIntervalSeconds(45);
-    inputParameters.setDesiredInstancesCount(1);
-
-    return inputParameters;
+    return ElasticContainerService.InputParameters
+        .builder()
+        .dockerImage(dockerImage)
+        .environmentVariables(envVariables)
+        .taskRolePolicyStatements(taskRolePolicyStatements())
+        .applicationPort(intValueFrom(appPort, defaultPort))
+        .healthCheckPort(intValueFrom(healthCheckPort, defaultPort))
+        .healthCheckPath(healthCheckPath)
+        .healthCheckIntervalSeconds(60)
+        .desiredInstancesCount(1)
+        .build();
   }
 
   private static int intValueFrom(String rawValue, int defaultIfError) {
