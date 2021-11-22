@@ -1,6 +1,5 @@
 package org.wcdevs.blog.awsdeployer;
 
-import org.wcdevs.blog.cdk.ApplicationEnvironment;
 import org.wcdevs.blog.cdk.CognitoStack;
 import org.wcdevs.blog.cdk.Util;
 import software.amazon.awscdk.core.App;
@@ -12,7 +11,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class CognitoDeployer {
-  private static final String CONSTRUCT_NAME = "cognito-stack";
   private static final String DEFAULT_CALLBACKS = "";
 
   public static void main(String[] args) {
@@ -20,33 +18,50 @@ public class CognitoDeployer {
 
     String accountId = Util.getValueInApp("accountId", app);
     String region = Util.getValueInApp("region", app);
-    String applicationName = Util.getValueInApp("applicationName", app);
     String environmentName = Util.getValueInApp("environmentName", app);
 
-    String applicationUrl = Util.getValueInApp("applicationUrl", app);
     String domainPrefix = Util.getValueInApp("domainPrefix", app);
-    var callback = Util.getValueOrDefault("callback", app, DEFAULT_CALLBACKS);
+    String frontEndApplicationName = Util.getValueInApp("frontEndApplicationName", app);
+    String frontEndApplicationUrl = Util.getValueInApp("frontEndApplicationUrl", app);
+    var frontEndCallbacks = Util.getValueOrDefault("frontEndCallbacks", app, DEFAULT_CALLBACKS);
+
+    String coreApplicationName = Util.getValueInApp("coreApplicationName", app);
+    String coreApplicationUrl = Util.getValueInApp("coreApplicationUrl", app);
+    var coreCallbacks = Util.getValueOrDefault("coreCallbacks", app, DEFAULT_CALLBACKS);
 
     var awsEnvironment = Util.environmentFrom(accountId, region);
-    var appEnv = new ApplicationEnvironment(applicationName, environmentName);
 
     var appDomainPrefix = Util.joinedString(Util.DASH_JOINER, environmentName, domainPrefix);
 
-    var callbackUrls = getCallbackUrls(callback);
-    var input = CognitoStack.InputParameters.builder()
-                                            .applicationUrl(applicationUrl)
-                                            .loginPageDomainPrefix(appDomainPrefix)
-                                            .applicationName(applicationName)
-                                            .userPoolOauthCallBackUrls(callbackUrls)
-                                            .flowImplicitCodeGrantEnabled(true)
-                                            .build();
+    var frontEndCallbackUrls = getCallbackUrls(frontEndCallbacks);
+    var coreCallbackUrls = getCallbackUrls(coreCallbacks);
 
-    CognitoStack.newInstance(app, CONSTRUCT_NAME, awsEnvironment, appEnv, input);
+    var frontEndUserPoolClient = CognitoStack.UserPoolClientParameter
+        .builder()
+        .applicationName(frontEndApplicationName)
+        .applicationUrl(frontEndApplicationUrl)
+        .userPoolOauthCallBackUrls(frontEndCallbackUrls)
+        .flowImplicitCodeGrantEnabled(true)
+        .build();
+    var coreUserPoolClient = CognitoStack.UserPoolClientParameter
+        .builder()
+        .applicationName(coreApplicationName)
+        .applicationUrl(coreApplicationUrl)
+        .userPoolOauthCallBackUrls(coreCallbackUrls)
+        .flowImplicitCodeGrantEnabled(true)
+        .build();
+    var input = CognitoStack.InputParameters
+        .builder()
+        .loginPageDomainPrefix(appDomainPrefix)
+        .userPoolClientConfigurations(List.of(frontEndUserPoolClient, coreUserPoolClient))
+        .build();
+
+    CognitoStack.newInstance(app, awsEnvironment, environmentName, input);
 
     app.synth();
   }
 
-  private static List<String> getCallbackUrls(final String callback) {
+  private static List<String> getCallbackUrls(String callback) {
     return Arrays.stream(Optional.ofNullable(callback)
                                  .orElse(DEFAULT_CALLBACKS)
                                  .split(","))

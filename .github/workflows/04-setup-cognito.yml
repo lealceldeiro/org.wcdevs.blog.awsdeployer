@@ -9,20 +9,31 @@ on:
         description: 'The name of the environment in which to deploy the resources.'
         required: true
         default: 'staging'
-      applicationName:
-        description: 'The name of the application associated to the deployment.'
-        required: true
-        default: 'front'
-      applicationUrl:
-        description: 'The URL the application will be associated to.'
-        required: true
-        default: https://wcdevs.org
       domainPrefix:
         description: 'The AWS login domain prefix for the application. It is the first part of the domain before .auth.[region].amazoncognito.com'
         required: true
-        default: wcdevs
-      callback:
-        description: 'Comma separated list of (full) callback urls'
+        default: 'wcdevs'
+      frontEndApplicationName:
+        description: 'The name of the frontend application associated to the deployment.'
+        required: true
+        default: 'front'
+      frontEndApplicationUrl:
+        description: 'The URL the frontend application will be associated to.'
+        required: true
+        default: 'https://wcdevs.org'
+      frontEndCallbacks:
+        description: 'Comma separated list of (full) callback urls for the frontend application'
+        required: false
+      coreApplicationName:
+        description: 'The name of the core application associated to the deployment.'
+        required: true
+        default: 'core'
+      coreApplicationUrl:
+        description: 'The URL the core application will be associated to.'
+        required: true
+        default: 'https://api.wcdevs.org'
+      coreCallbacks:
+        description: 'Comma separated list of (full) callback urls for the core application'
         required: false
 jobs:
   setup-cognito:
@@ -56,10 +67,13 @@ jobs:
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEPLOY_REGION }}
         run: |
           npm run cognito:deploy -- \
-            -c environmentName=${{ github.event.inputs.environmentName }} \
-            -c applicationName=${{ github.event.inputs.applicationName }} \
             -c accountId=${{ secrets.AWS_ACCOUNT_ID }} \
             -c region=${{ secrets.AWS_DEPLOY_REGION }} \
-            -c callback=${{ github.event.inputs.callback }} \
-            -c applicationUrl=${{ github.event.inputs.applicationUrl }} \
-            -c domainPrefix=${{ github.event.inputs.domainPrefix }}
+            -c environmentName=${{ github.event.inputs.environmentName }} \
+            -c domainPrefix=${{ github.event.inputs.domainPrefix }} \
+            -c frontEndApplicationName=${{ github.event.inputs.frontEndApplicationName }} \
+            -c frontEndApplicationUrl=${{ github.event.inputs.frontEndApplicationUrl }} \
+            -c frontEndCallbacks=${{ github.event.inputs.frontEndCallbacks }} \
+            -c coreApplicationName=${{ github.event.inputs.coreApplicationName }} \
+            -c coreApplicationUrl=${{ github.event.inputs.coreApplicationUrl }} \
+            -c coreCallbacks=${{ github.event.inputs.coreCallbacks }}
