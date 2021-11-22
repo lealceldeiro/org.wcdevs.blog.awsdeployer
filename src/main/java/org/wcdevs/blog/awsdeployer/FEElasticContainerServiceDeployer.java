@@ -40,14 +40,15 @@ public class FEElasticContainerServiceDeployer {
     var awsEnvironment = Util.environmentFrom(accountId, region);
     var appEnv = new ApplicationEnvironment(applicationName, environmentName);
 
+    var serviceStack = serviceStack(app, appEnv, awsEnvironment);
     var parametersStack = EnvVarsUtil.parametersStack(app, SERVICE_STACK_NAME, appEnv,
                                                       awsEnvironment);
-    var serviceStack = serviceStack(app, appEnv, awsEnvironment);
+
     var networkOutputParameters = Network.outputParametersFrom(serviceStack, appEnv);
     var cognitoParams = CognitoStack.getOutputParameters(parametersStack, environmentName);
 
     var commonEnvVars = commonEnvVars(environmentName, appListenPort, appHealthCheckPort);
-    var cognitoEnvVars = EnvVarsUtil.cognitoEnvVars(parametersStack, appEnv, cognitoParams);
+    var cognitoEnvVars = EnvVarsUtil.cognitoEnvVars(serviceStack, appEnv, cognitoParams);
     var environmentVariables = EnvVarsUtil.environmentVariables(commonEnvVars, cognitoEnvVars);
 
     var dockerImage = dockerImage(dockerRepositoryName, dockerImageTag, dockerImageUrl);
