@@ -1,6 +1,7 @@
 package org.wcdevs.blog.awsdeployer;
 
 import org.wcdevs.blog.cdk.ApplicationEnvironment;
+import org.wcdevs.blog.cdk.CognitoStack;
 import org.wcdevs.blog.cdk.ElasticContainerService;
 import org.wcdevs.blog.cdk.Network;
 import org.wcdevs.blog.cdk.Util;
@@ -37,20 +38,24 @@ public class FEElasticContainerServiceDeployer {
     var appHealthCheckPort = Util.getValueOrDefault("healthCheckPort", app, "3000");
 
     var awsEnvironment = Util.environmentFrom(accountId, region);
-    var applicationEnvironment = new ApplicationEnvironment(applicationName, environmentName);
+    var appEnv = new ApplicationEnvironment(applicationName, environmentName);
 
-    var serviceStack = serviceStack(app, applicationEnvironment, awsEnvironment);
-    var networkOutputParameters = Network.outputParametersFrom(serviceStack,
-                                                               applicationEnvironment);
+    var parametersStack = EnvVarsUtil.parametersStack(app, SERVICE_STACK_NAME, appEnv,
+                                                      awsEnvironment);
+    var serviceStack = serviceStack(app, appEnv, awsEnvironment);
+    var networkOutputParameters = Network.outputParametersFrom(serviceStack, appEnv);
+    var cognitoParams = CognitoStack.getOutputParameters(parametersStack, environmentName);
 
-    var environmentVariables = environmentVariables(environmentName, appListenPort,
-                                                    appHealthCheckPort);
+    var commonEnvVars = commonEnvVars(environmentName, appListenPort, appHealthCheckPort);
+    var cognitoEnvVars = EnvVarsUtil.cognitoEnvVars(serviceStack, appEnv, cognitoParams);
+    var environmentVariables = EnvVarsUtil.environmentVariables(commonEnvVars, cognitoEnvVars);
+
     var dockerImage = dockerImage(dockerRepositoryName, dockerImageTag, dockerImageUrl);
     var inputParameters = inputParameters(dockerImage, environmentVariables, appListenPort,
                                           appHealthCheckPath, appHealthCheckPort);
 
     ElasticContainerService.newInstance(serviceStack, CONSTRUCT_NAME, awsEnvironment,
-                                        applicationEnvironment, inputParameters,
+                                        appEnv, inputParameters,
                                         networkOutputParameters);
 
     app.synth();
@@ -65,14 +70,12 @@ public class FEElasticContainerServiceDeployer {
                                                       .build());
   }
 
-  private static Map<String, String> environmentVariables(String environmentName,
-                                                          String appListenPort,
-                                                          String appHealthCheckPort) {
+  private static Map<String, String> commonEnvVars(String environmentName, String appListenPort,
+                                                   String appHealthCheckPort) {
     return Map.of(FE_APP_LISTEN_PORT, appListenPort,
                   FE_APP_MANAGEMENT_PORT, appHealthCheckPort,
                   ENVIRONMENT_NAME, environmentName);
   }
-
 
   private static ElasticContainerService.DockerImage dockerImage(String dockerRepositoryName,
                                                                  String dockerImageTag,

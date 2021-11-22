@@ -14,12 +14,8 @@ import software.amazon.awscdk.core.StackProps;
 import software.amazon.awscdk.services.iam.Effect;
 import software.amazon.awscdk.services.iam.PolicyStatement;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.util.Map.entry;
 
@@ -37,11 +33,6 @@ public class BEElasticContainerServiceDeployer {
 
   private static final String ENVIRONMENT_NAME = "ENVIRONMENT_NAME";
   private static final String SPRING_PROFILES_ACTIVE = "SPRING_PROFILES_ACTIVE";
-
-  private static final String COGNITO_PROVIDER_URL = "COGNITO_PROVIDER_URL";
-  private static final String COGNITO_CLIENT_ID = "COGNITO_CLIENT_ID";
-  private static final String COGNITO_CLIENT_NAME = "COGNITO_CLIENT_NAME";
-  private static final String COGNITO_CLIENT_SECRET = "COGNITO_CLIENT_SECRET";
   private static final String AWS_REGION = "AWS_REGION";
 
   private static final String SERVICE_STACK_NAME = "be-service-stack";
@@ -65,20 +56,23 @@ public class BEElasticContainerServiceDeployer {
     var appHealthCheckPort = Util.getValueOrDefault("healthCheckPort", app, "8080");
 
     var awsEnvironment = Util.environmentFrom(accountId, region);
-    var applicationEnvironment = new ApplicationEnvironment(applicationName, environmentName);
+    var appEnv = new ApplicationEnvironment(applicationName, environmentName);
 
-    var parametersStack = parametersStack(app, applicationEnvironment, awsEnvironment);
-    var dbOutputParams = Database.outputParametersFrom(parametersStack, applicationEnvironment);
-    var cognitoParams = CognitoStack.getOutputParameters(parametersStack, applicationEnvironment);
+    var parametersStack = EnvVarsUtil.parametersStack(app, SERVICE_STACK_NAME, appEnv,
+                                                      awsEnvironment);
+    var dbOutputParams = Database.outputParametersFrom(parametersStack, appEnv);
+    var cognitoParams = CognitoStack.getOutputParameters(parametersStack,
+                                                         appEnv.getEnvironmentName());
 
-    var serviceStack = serviceStack(app, applicationEnvironment, awsEnvironment);
+    var serviceStack = serviceStack(app, appEnv, awsEnvironment);
 
     var commonEnvVar = commonEnvVars(region, environmentName, springProfile, appListenPort,
                                      appHealthCheckPort);
     var dbEnvVar = dbEnvVars(serviceStack, dbOutputParams);
-    var cognitoEnvVar = cognitoEnvVars(serviceStack, cognitoParams);
+    var cognitoEnvVar = EnvVarsUtil.cognitoEnvVars(serviceStack, appEnv, cognitoParams);
 
-    var environmentVariables = environmentVariables(commonEnvVar, dbEnvVar, cognitoEnvVar);
+    var environmentVariables = EnvVarsUtil.environmentVariables(commonEnvVar, dbEnvVar,
+                                                                cognitoEnvVar);
     var secGroupIdsToGrantIngressFromEcs = secGroupIdAccessFromEcs(dbOutputParams);
     var dockerImage = dockerImage(dockerRepositoryName, dockerImageTag, dockerImageUrl);
     var inputParameters = inputParameters(dockerImage, environmentVariables, appListenPort,
@@ -86,33 +80,12 @@ public class BEElasticContainerServiceDeployer {
                                           secGroupIdsToGrantIngressFromEcs);
 
     var networkOutputParameters = Network.outputParametersFrom(serviceStack,
-                                                               applicationEnvironment);
+                                                               appEnv);
 
     ElasticContainerService.newInstance(serviceStack, CONSTRUCT_NAME, awsEnvironment,
-                                        applicationEnvironment, inputParameters,
+                                        appEnv, inputParameters,
                                         networkOutputParameters);
     app.synth();
-  }
-
-  private static Stack parametersStack(App app, ApplicationEnvironment applicationEnvironment,
-                                       Environment awsEnvironment) {
-    var timeId = getTimeId();
-    var pStackName = Util.joinedString(Util.DASH_JOINER, "parameters", SERVICE_STACK_NAME, timeId);
-    var prefixedParamsStackName = applicationEnvironment.prefixed(pStackName);
-
-    return new Stack(app, prefixedParamsStackName + timeId,
-                     StackProps.builder()
-                               .stackName(prefixedParamsStackName)
-                               .env(awsEnvironment)
-                               .build());
-  }
-
-  private static String getTimeId() {
-    long timestamp = System.currentTimeMillis();
-    var utc = LocalDateTime.now(ZoneId.of("UTC"));
-    return Util.joinedString(Util.DASH_JOINER, utc.getYear(), utc.getMonthValue(),
-                             utc.getDayOfMonth(), utc.getHour(), utc.getMinute(), utc.getSecond(),
-                             timestamp);
   }
 
   private static Stack serviceStack(App app, ApplicationEnvironment applicationEnvironment,
@@ -154,34 +127,6 @@ public class BEElasticContainerServiceDeployer {
                          entry(CORE_APP_DB_URL, springDataSourceUrl),
                          entry(CORE_APP_DB_USER, dbUsername),
                          entry(CORE_APP_DB_PASSWORD, dbPassword));
-  }
-
-  private static Map<String, String> cognitoEnvVars(Construct scope,
-                                                    CognitoStack.OutputParameters cognitoParams) {
-    var cognitoClientSecret = CognitoStack.getUserPoolClientSecret(scope, cognitoParams);
-    var cognitoClientSecretValue
-        = cognitoClientSecret.secretValueFromJson(CognitoStack.USER_POOL_CLIENT_SECRET_HOLDER)
-                             .toString();
-    var cognitoClientId
-        = cognitoClientSecret.secretValueFromJson(CognitoStack.USER_POOL_CLIENT_ID_HOLDER)
-                             .toString();
-    var cognitoClientName
-        = cognitoClientSecret.secretValueFromJson(CognitoStack.USER_POOL_CLIENT_NAME_HOLDER)
-                             .toString();
-
-    return Map.ofEntries(entry(COGNITO_PROVIDER_URL, cognitoParams.getProviderUrl()),
-                         entry(COGNITO_CLIENT_ID, cognitoClientId),
-                         entry(COGNITO_CLIENT_NAME, cognitoClientName),
-                         entry(COGNITO_CLIENT_SECRET, cognitoClientSecretValue));
-  }
-
-  private static Map<String, String> environmentVariables(Map<String, String> commonEnvVar,
-                                                          Map<String, String> dbEnvVar,
-                                                          Map<String, String> cognitoEnvVar) {
-    return Stream.concat(commonEnvVar.entrySet().stream(),
-                         Stream.concat(dbEnvVar.entrySet().stream(),
-                                       cognitoEnvVar.entrySet().stream()))
-                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
   private static ElasticContainerService.DockerImage dockerImage(String dockerRepositoryName,
