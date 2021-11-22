@@ -47,7 +47,7 @@ public class FEElasticContainerServiceDeployer {
     var cognitoParams = CognitoStack.getOutputParameters(parametersStack, environmentName);
 
     var commonEnvVars = commonEnvVars(environmentName, appListenPort, appHealthCheckPort);
-    var cognitoEnvVars = EnvVarsUtil.cognitoEnvVars(serviceStack, appEnv, cognitoParams);
+    var cognitoEnvVars = EnvVarsUtil.cognitoEnvVars(parametersStack, appEnv, cognitoParams);
     var environmentVariables = EnvVarsUtil.environmentVariables(commonEnvVars, cognitoEnvVars);
 
     var dockerImage = dockerImage(dockerRepositoryName, dockerImageTag, dockerImageUrl);

@@ -46,7 +46,6 @@ public final class EnvVarsUtil {
                          entry(COGNITO_CLIENT_SECRET, cognitoClientSecretValue));
   }
 
-
   static Map<String, String> environmentVariables(Map<String, String> commonEnvVar,
                                                   Map<String, String> dbEnvVar,
                                                   Map<String, String> cognitoEnvVar) {

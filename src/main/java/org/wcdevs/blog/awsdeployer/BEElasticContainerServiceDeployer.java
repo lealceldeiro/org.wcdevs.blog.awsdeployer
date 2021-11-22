@@ -63,13 +63,13 @@ public class BEElasticContainerServiceDeployer {
     var dbOutputParams = Database.outputParametersFrom(parametersStack, appEnv);
     var cognitoParams = CognitoStack.getOutputParameters(parametersStack,
                                                          appEnv.getEnvironmentName());
+    var cognitoEnvVar = EnvVarsUtil.cognitoEnvVars(parametersStack, appEnv, cognitoParams);
 
     var serviceStack = serviceStack(app, appEnv, awsEnvironment);
 
     var commonEnvVar = commonEnvVars(region, environmentName, springProfile, appListenPort,
                                      appHealthCheckPort);
     var dbEnvVar = dbEnvVars(serviceStack, dbOutputParams);
-    var cognitoEnvVar = EnvVarsUtil.cognitoEnvVars(serviceStack, appEnv, cognitoParams);
 
     var environmentVariables = EnvVarsUtil.environmentVariables(commonEnvVar, dbEnvVar,
                                                                 cognitoEnvVar);
