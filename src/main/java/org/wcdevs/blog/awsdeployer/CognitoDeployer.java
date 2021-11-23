@@ -45,7 +45,7 @@ public class CognitoDeployer {
         .applicationName(coreApplicationName)
         .applicationUrl(coreApplicationUrl)
         .userPoolOauthCallBackUrls(coreCallbackUrls)
-        .flowAuthorizationCodeGrantEnabled(true)
+        .flowClientCredentialsEnabled(true)
         .build();
     var input = CognitoStack.InputParameters
         .builder()
