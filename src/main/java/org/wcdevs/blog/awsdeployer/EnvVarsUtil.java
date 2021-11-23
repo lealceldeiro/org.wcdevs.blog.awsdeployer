@@ -8,8 +8,6 @@ import software.amazon.awscdk.core.Environment;
 import software.amazon.awscdk.core.Stack;
 import software.amazon.awscdk.core.StackProps;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -23,6 +21,7 @@ public final class EnvVarsUtil {
   private static final String COGNITO_CLIENT_SECRET = "COGNITO_CLIENT_SECRET";
 
   private static final String PARAMETERS_STACK = "parameters";
+
   private EnvVarsUtil() {
 
   }
@@ -56,7 +55,7 @@ public final class EnvVarsUtil {
   }
 
   static Map<String, String> environmentVariables(Map<String, String> commonEnvVar,
-                                                          Map<String, String> cognitoEnvVar) {
+                                                  Map<String, String> cognitoEnvVar) {
     return Stream.concat(commonEnvVar.entrySet().stream(),
                          cognitoEnvVar.entrySet().stream())
                  .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
@@ -64,22 +63,14 @@ public final class EnvVarsUtil {
 
   static Stack parametersStack(App app, String stackId, ApplicationEnvironment applicationEnvironment,
                                Environment awsEnvironment) {
-    var timeId = getTimeId();
+    var timeId = System.currentTimeMillis();
     var pStackName = Util.joinedString(Util.DASH_JOINER, PARAMETERS_STACK, stackId, timeId);
     var prefixedParamsStackName = applicationEnvironment.prefixed(pStackName);
 
-    return new Stack(app, prefixedParamsStackName + timeId,
+    return new Stack(app, prefixedParamsStackName,
                      StackProps.builder()
                                .stackName(prefixedParamsStackName)
                                .env(awsEnvironment)
                                .build());
-  }
-
-  private static String getTimeId() {
-    long timestamp = System.currentTimeMillis();
-    var utc = LocalDateTime.now(ZoneId.of("UTC"));
-    return Util.joinedString(Util.DASH_JOINER, utc.getYear(), utc.getMonthValue(),
-                             utc.getDayOfMonth(), utc.getHour(), utc.getMinute(), utc.getSecond(),
-                             timestamp);
   }
 }
