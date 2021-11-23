@@ -1,6 +1,6 @@
 # It should be triggered once for each app to set up a network for.
 
-name: 02 - Setup network
+name: 03 - Setup network
 
 on:
   workflow_dispatch:

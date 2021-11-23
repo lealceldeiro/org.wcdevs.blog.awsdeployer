@@ -1,23 +1,23 @@
-# Triggered once.
-
-name: 05 - Create the BE application environment
+name: 01 - Set up deployment sequencer lambda function
 
 on:
   workflow_dispatch:
     inputs:
       environmentName:
-        description: 'The name of the environment in which to deploy the app-specific environment resources.'
+        description: 'The name of the environment the function will be associated to.'
         required: true
         default: 'staging'
       applicationName:
-        description: 'The name of the application for which to set-up the environment.'
+        description: 'The name of the application for which to set-up the lambda function.'
         required: true
+        # Used later from the application to call the lambda function by its name
         default: 'core'
+
 jobs:
-  deploy-database-stack:
+  bootstrap-cdk-setup:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    name: Deploy the database stack
+    name: Deploy the Deployment Sequencer AWS Lambda Function
 
     steps:
       - name: Checkout code
@@ -38,14 +38,20 @@ jobs:
       - name: NPM install
         run: npm i
 
-      - name: Deploy database stack
+      - name: Deploy Deployment Sequencer AWS Lambda Function stack
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEPLOY_REGION }}
+          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
         run: |
-          npm run database:deploy -- \
+          cd deployment-sequencer-lambda
+          npm install
+          npm run dist
+          cd ..
+          npm run deployment-sequencer:deploy -- \
             -c environmentName=${{ github.event.inputs.environmentName }} \
             -c applicationName=${{ github.event.inputs.applicationName }} \
             -c accountId=${{ secrets.AWS_ACCOUNT_ID }} \
-            -c region=${{ secrets.AWS_DEPLOY_REGION }}
+            -c region=${{ secrets.AWS_DEPLOY_REGION }} \
+            -c githubToken=${{ secrets.GH_API_TOKEN }}

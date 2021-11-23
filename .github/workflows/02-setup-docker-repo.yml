@@ -1,6 +1,6 @@
 # It should be triggered once for each app to set up a repository for.
 
-name: 01 - Setup Docker Repository
+name: 02 - Setup Docker Repository
 
 on:
   workflow_dispatch:
