@@ -43,6 +43,7 @@ jobs:
           npm run service:deploy:be -- \
             -c accountId=${{ secrets.AWS_ACCOUNT_ID }} \
             -c region=${{ secrets.AWS_DEPLOY_REGION }} \
+            -c allowedOrigins=${{ secrets.CORE_APP_ALLOWED_ORIGINS }} \
             -c environmentName=${{ github.event.inputs.environment }} \
             -c applicationName=${{ github.event.inputs.application-name }} \
             -c dockerRepositoryName=${{ github.event.inputs.application-name }}dockerrepository \

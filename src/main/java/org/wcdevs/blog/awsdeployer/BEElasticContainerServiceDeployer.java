@@ -34,6 +34,7 @@ public class BEElasticContainerServiceDeployer {
   private static final String ENVIRONMENT_NAME = "ENVIRONMENT_NAME";
   private static final String SPRING_PROFILES_ACTIVE = "SPRING_PROFILES_ACTIVE";
   private static final String AWS_REGION = "AWS_REGION";
+  private static final String ALLOWED_ORIGINS = "ALLOWED_ORIGINS";
 
   private static final String SERVICE_STACK_NAME = "be-service-stack";
 
@@ -54,6 +55,7 @@ public class BEElasticContainerServiceDeployer {
     var appListenPort = Util.getValueOrDefault("appPort", app, "8080");
     var appHealthCheckPath = Util.getValueOrDefault("healthCheckPath", app, "/");
     var appHealthCheckPort = Util.getValueOrDefault("healthCheckPort", app, "8080");
+    var commaSeparatedAllowedOrigins = Util.getValueOrDefault("allowedOrigins", app, "/**");
 
     var awsEnvironment = Util.environmentFrom(accountId, region);
     var appEnv = new ApplicationEnvironment(applicationName, environmentName);
@@ -67,7 +69,7 @@ public class BEElasticContainerServiceDeployer {
                                                          appEnv.getEnvironmentName());
 
     var commonEnvVar = commonEnvVars(region, environmentName, springProfile, appListenPort,
-                                     appHealthCheckPort);
+                                     appHealthCheckPort, commaSeparatedAllowedOrigins);
     var dbEnvVar = dbEnvVars(serviceStack, dbOutputParams);
     var cognitoEnvVar = EnvVarsUtil.cognitoEnvVars(serviceStack, appEnv, cognitoParams);
 
@@ -103,12 +105,13 @@ public class BEElasticContainerServiceDeployer {
 
   private static Map<String, String> commonEnvVars(String awsRegion, String environmentName,
                                                    String springProfile, String listenPort,
-                                                   String healthCheckPort) {
+                                                   String healthCheckPort, String allowedOrigins) {
     return Map.ofEntries(entry(CORE_APP_LISTEN_PORT, listenPort),
                          entry(CORE_APP_MANAGEMENT_PORT, healthCheckPort),
                          entry(ENVIRONMENT_NAME, environmentName),
                          entry(SPRING_PROFILES_ACTIVE, springProfile),
-                         entry(AWS_REGION, awsRegion));
+                         entry(AWS_REGION, awsRegion),
+                         entry(ALLOWED_ORIGINS, allowedOrigins));
   }
 
   private static Map<String, String> dbEnvVars(Construct scope,
