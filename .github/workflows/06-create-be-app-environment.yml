@@ -13,6 +13,9 @@ on:
         description: 'The name of the application for which to set-up the environment.'
         required: true
         default: 'core'
+      cognitoScopes:
+        description: 'When the core application connects with Cognito, which scopes should it request? (blank for default values)'
+        required: false
 jobs:
   deploy-database-stack:
     if: github.ref == 'refs/heads/main'
@@ -47,5 +50,6 @@ jobs:
           npm run database:deploy -- \
             -c environmentName=${{ github.event.inputs.environmentName }} \
             -c applicationName=${{ github.event.inputs.applicationName }} \
+            -c cognitoScopes=${{ github.event.inputs.cognitoScopes }} \
             -c accountId=${{ secrets.AWS_ACCOUNT_ID }} \
             -c region=${{ secrets.AWS_DEPLOY_REGION }}

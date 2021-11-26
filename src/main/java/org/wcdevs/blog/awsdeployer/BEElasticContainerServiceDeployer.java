@@ -56,6 +56,8 @@ public class BEElasticContainerServiceDeployer {
     var appHealthCheckPath = Util.getValueOrDefault("healthCheckPath", app, "/");
     var appHealthCheckPort = Util.getValueOrDefault("healthCheckPort", app, "8080");
     var commaSeparatedAllowedOrigins = Util.getValueOrDefault("allowedOrigins", app, "/**");
+    var cognitoScopes = Util.getValueOrDefault("cognitoScopes", app,
+                                               "openid, profile, email, phone");
 
     var awsEnvironment = Util.environmentFrom(accountId, region);
     var appEnv = new ApplicationEnvironment(applicationName, environmentName);
@@ -71,7 +73,8 @@ public class BEElasticContainerServiceDeployer {
     var commonEnvVar = commonEnvVars(region, environmentName, springProfile, appListenPort,
                                      appHealthCheckPort, commaSeparatedAllowedOrigins);
     var dbEnvVar = dbEnvVars(serviceStack, dbOutputParams);
-    var cognitoEnvVar = EnvVarsUtil.cognitoEnvVars(serviceStack, appEnv, cognitoParams);
+    var cognitoEnvVar = EnvVarsUtil.cognitoEnvVars(serviceStack, appEnv, cognitoParams,
+                                                   cognitoScopes);
 
     var environmentVariables = EnvVarsUtil.environmentVariables(commonEnvVar, dbEnvVar,
                                                                 cognitoEnvVar);

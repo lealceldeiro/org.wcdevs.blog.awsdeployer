@@ -19,6 +19,7 @@ public final class EnvVarsUtil {
   private static final String COGNITO_CLIENT_ID = "COGNITO_CLIENT_ID";
   private static final String COGNITO_CLIENT_NAME = "COGNITO_CLIENT_NAME";
   private static final String COGNITO_CLIENT_SECRET = "COGNITO_CLIENT_SECRET";
+  private static final String COGNITO_SCOPES = "COGNITO_SCOPES";
 
   private static final String PARAMETERS_STACK = "parameters";
 
@@ -28,6 +29,12 @@ public final class EnvVarsUtil {
 
   static Map<String, String> cognitoEnvVars(Stack scope, ApplicationEnvironment appEnv,
                                             CognitoStack.OutputParameters cognitoParams) {
+    return cognitoEnvVars(scope, appEnv, cognitoParams, "");
+  }
+
+  static Map<String, String> cognitoEnvVars(Stack scope, ApplicationEnvironment appEnv,
+                                            CognitoStack.OutputParameters cognitoParams,
+                                            String scopes) {
     var cognitoClientSecret = CognitoStack.getUserPoolClientSecret(scope, appEnv);
     var cognitoClientSecretValue
         = cognitoClientSecret.secretValueFromJson(CognitoStack.USER_POOL_CLIENT_SECRET_HOLDER)
@@ -42,7 +49,8 @@ public final class EnvVarsUtil {
     return Map.ofEntries(entry(COGNITO_PROVIDER_URL, cognitoParams.getProviderUrl()),
                          entry(COGNITO_CLIENT_ID, cognitoClientId),
                          entry(COGNITO_CLIENT_NAME, cognitoClientName),
-                         entry(COGNITO_CLIENT_SECRET, cognitoClientSecretValue));
+                         entry(COGNITO_CLIENT_SECRET, cognitoClientSecretValue),
+                         entry(COGNITO_SCOPES, scopes));
   }
 
   static Map<String, String> environmentVariables(Map<String, String> commonEnvVar,
