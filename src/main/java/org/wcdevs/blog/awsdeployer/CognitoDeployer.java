@@ -48,7 +48,7 @@ public class CognitoDeployer {
         .applicationUrl(coreApplicationUrl)
         .userPoolOauthCallBackUrls(coreCallbackUrls)
         .flowClientCredentialsEnabled(true)
-        .scopes(Collections.emptyList())
+        .scopes(List.of(OAuthScope.custom("core_app")))
         .build();
     var input = CognitoStack.InputParameters
         .builder()
