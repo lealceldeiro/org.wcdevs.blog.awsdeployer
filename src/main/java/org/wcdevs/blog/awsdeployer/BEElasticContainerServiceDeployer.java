@@ -14,6 +14,7 @@ import software.amazon.awscdk.core.StackProps;
 import software.amazon.awscdk.services.iam.Effect;
 import software.amazon.awscdk.services.iam.PolicyStatement;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +35,7 @@ public class BEElasticContainerServiceDeployer {
   private static final String ENVIRONMENT_NAME = "ENVIRONMENT_NAME";
   private static final String SPRING_PROFILES_ACTIVE = "SPRING_PROFILES_ACTIVE";
   private static final String AWS_REGION = "AWS_REGION";
-  private static final String ALLOWED_ORIGINS = "ALLOWED_ORIGINS";
+  private static final String ALLOWED_ORIGINS = "COREAPP_ALLOWEDORIGINS";
 
   private static final String SERVICE_STACK_NAME = "be-service-stack";
 
@@ -109,12 +110,22 @@ public class BEElasticContainerServiceDeployer {
   private static Map<String, String> commonEnvVars(String awsRegion, String environmentName,
                                                    String springProfile, String listenPort,
                                                    String healthCheckPort, String allowedOrigins) {
-    return Map.ofEntries(entry(CORE_APP_LISTEN_PORT, listenPort),
-                         entry(CORE_APP_MANAGEMENT_PORT, healthCheckPort),
-                         entry(ENVIRONMENT_NAME, environmentName),
-                         entry(SPRING_PROFILES_ACTIVE, springProfile),
-                         entry(AWS_REGION, awsRegion),
-                         entry(ALLOWED_ORIGINS, allowedOrigins));
+    var envVars = new HashMap<>(Map.ofEntries(entry(CORE_APP_LISTEN_PORT, listenPort),
+                                              entry(CORE_APP_MANAGEMENT_PORT, healthCheckPort),
+                                              entry(ENVIRONMENT_NAME, environmentName),
+                                              entry(SPRING_PROFILES_ACTIVE, springProfile),
+                                              entry(AWS_REGION, awsRegion)));
+    // https://github.com/spring-projects/spring-boot/wiki/Relaxed-Binding-2.0#lists-1
+    // create vars as follows: COREAPP_ALLOWEDORIGINS_0_ = https://example.com
+    var origins = allowedOrigins.split(",");
+    for (int i = 0; i < origins.length; i++) {
+      var origin = origins[i].trim();
+      if (!origin.isEmpty()) {
+        envVars.put(ALLOWED_ORIGINS + "_" + i + "_", origin);
+      }
+    }
+
+    return envVars;
   }
 
   private static Map<String, String> dbEnvVars(Construct scope,
