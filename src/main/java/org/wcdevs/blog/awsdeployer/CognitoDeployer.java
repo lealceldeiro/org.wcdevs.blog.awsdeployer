@@ -40,7 +40,7 @@ public class CognitoDeployer {
         .applicationName(frontEndApplicationName)
         .applicationUrl(frontEndApplicationUrl)
         .userPoolOauthCallBackUrls(frontEndCallbackUrls)
-        .flowImplicitCodeGrantEnabled(true)
+        .flowAuthorizationCodeGrantEnabled(true)
         .scopes(List.of(OAuthScope.OPENID, OAuthScope.PROFILE, OAuthScope.EMAIL))
         .build();
     var coreUserPoolClient = CognitoStack.UserPoolClientParameter
