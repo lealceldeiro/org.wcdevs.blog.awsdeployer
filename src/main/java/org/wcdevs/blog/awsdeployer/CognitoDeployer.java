@@ -35,7 +35,6 @@ public class CognitoDeployer {
         .builder()
         .applicationName(frontEndApplicationName)
         .applicationUrl(frontEndApplicationUrl)
-        .generateSecretEnabled(false)
         .userPoolOauthCallBackUrls(frontEndCallbackUrls)
         .flowAuthorizationCodeGrantEnabled(true)
         .scopes(List.of(OAuthScope.OPENID, OAuthScope.PROFILE, OAuthScope.EMAIL))
