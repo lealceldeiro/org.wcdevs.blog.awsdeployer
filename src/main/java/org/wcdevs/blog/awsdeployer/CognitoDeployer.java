@@ -5,7 +5,6 @@ import org.wcdevs.blog.cdk.Util;
 import software.amazon.awscdk.core.App;
 import software.amazon.awscdk.services.cognito.OAuthScope;
 
-import java.util.Collections;
 import java.util.List;
 
 public class CognitoDeployer {
@@ -39,6 +38,7 @@ public class CognitoDeployer {
         .builder()
         .applicationName(frontEndApplicationName)
         .applicationUrl(frontEndApplicationUrl)
+        .generateSecretEnabled(false)
         .userPoolOauthCallBackUrls(frontEndCallbackUrls)
         .flowAuthorizationCodeGrantEnabled(true)
         .scopes(List.of(OAuthScope.OPENID, OAuthScope.PROFILE, OAuthScope.EMAIL))
