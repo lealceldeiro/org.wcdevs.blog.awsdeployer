@@ -32,9 +32,6 @@ on:
         description: 'The URL the core application will be associated to.'
         required: true
         default: 'https://api.wcdevs.org'
-      coreCallbacks:
-        description: 'Comma separated list of (full) callback urls for the core application'
-        required: false
 jobs:
   setup-cognito:
     if: github.ref == 'refs/heads/main'
