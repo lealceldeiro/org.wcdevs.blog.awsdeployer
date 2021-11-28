@@ -75,5 +75,4 @@ jobs:
             -c frontEndApplicationUrl=${{ github.event.inputs.frontEndApplicationUrl }} \
             -c frontEndCallbacks=${{ github.event.inputs.frontEndCallbacks }} \
             -c coreApplicationName=${{ github.event.inputs.coreApplicationName }} \
-            -c coreApplicationUrl=${{ github.event.inputs.coreApplicationUrl }} \
-            -c coreCallbacks=${{ github.event.inputs.coreCallbacks }}
+            -c coreApplicationUrl=${{ github.event.inputs.coreApplicationUrl }}

@@ -24,7 +24,6 @@ public class CognitoDeployer {
 
     String coreApplicationName = Util.getValueInApp("coreApplicationName", app);
     String coreApplicationUrl = Util.getValueInApp("coreApplicationUrl", app);
-    var coreCallbacks = Util.getValueOrDefault("coreCallbacks", app, DEFAULT_CALLBACKS);
 
     var awsEnvironment = Util.environmentFrom(accountId, region);
 
@@ -32,8 +31,6 @@ public class CognitoDeployer {
 
     var frontEndCallbackUrls = DeployerUtil.valuesFromCommaSeparatedString(frontEndCallbacks,
                                                                            DEFAULT_CALLBACKS);
-    var coreCallbackUrls = DeployerUtil.valuesFromCommaSeparatedString(coreCallbacks);
-
     var frontEndUserPoolClient = CognitoStack.UserPoolClientParameter
         .builder()
         .applicationName(frontEndApplicationName)
@@ -47,7 +44,6 @@ public class CognitoDeployer {
         .builder()
         .applicationName(coreApplicationName)
         .applicationUrl(coreApplicationUrl)
-        .userPoolOauthCallBackUrls(coreCallbackUrls)
         .build();
     var input = CognitoStack.InputParameters
         .builder()
