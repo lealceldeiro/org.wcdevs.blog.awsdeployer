@@ -11,11 +11,9 @@
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <cdk.version>1.131.0</cdk.version>
-    <junit.version>5.8.1</junit.version>
-    <mockito.version>4.0.0</mockito.version>
+    <cdk.version>1.137.0</cdk.version>
     <passay.version>1.6.1</passay.version>
-    <cdk-constructs.version>2.1.5</cdk-constructs.version>
+    <cdk-constructs.version>2.1.6</cdk-constructs.version>
   </properties>
 
   <dependencies>
@@ -116,25 +114,6 @@
       <artifactId>cdk</artifactId>
       <version>${cdk-constructs.version}</version>
     </dependency>
-
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <version>${junit.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
-      <version>${mockito.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-inline</artifactId>
-      <version>${mockito.version}</version>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 
   <build>
@@ -143,11 +122,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.8.1</version>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.0.0-M5</version>
       </plugin>
     </plugins>
   </build>
