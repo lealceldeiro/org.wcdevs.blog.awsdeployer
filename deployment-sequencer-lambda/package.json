@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/lealceldeiro/org.wcdevs.blog.awsdeployer#readme",
   "dependencies": {
-    "@aws-sdk/client-sqs": "3.38.0",
+    "@aws-sdk/client-sqs": "3.48.0",
     "axios": "^0.24.0"
   },
   "devDependencies": {
