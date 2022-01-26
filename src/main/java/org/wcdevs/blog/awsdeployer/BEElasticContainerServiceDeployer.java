@@ -28,8 +28,8 @@ public class BEElasticContainerServiceDeployer {
   private static final String CORE_APP_DB_DRIVER_VAR = "SPRING_DATASOURCE_DRIVERCLASSNAME";
   private static final String CORE_APP_DB_DRIVER_POSTGRES = "org.postgresql.Driver";
 
-  private static final String CORE_APP_LISTEN_PORT = "CORE_APP_LISTEN_PORT";
-  private static final String CORE_APP_MANAGEMENT_PORT = "CORE_APP_MANAGEMENT_PORT";
+  private static final String CORE_APP_LISTEN_PORT_VAR = "SERVER_PORT";
+  private static final String CORE_APP_MANAGEMENT_PORT_VAR = "MANAGEMENT_SERVER_PORT";
 
   private static final String ENVIRONMENT_NAME = "ENVIRONMENT_NAME";
   private static final String SPRING_PROFILES_ACTIVE = "SPRING_PROFILES_ACTIVE";
@@ -109,8 +109,8 @@ public class BEElasticContainerServiceDeployer {
   private static Map<String, String> commonEnvVars(String awsRegion, String environmentName,
                                                    String springProfile, String listenPort,
                                                    String healthCheckPort, String allowedOrigins) {
-    return Map.ofEntries(entry(CORE_APP_LISTEN_PORT, listenPort),
-                         entry(CORE_APP_MANAGEMENT_PORT, healthCheckPort),
+    return Map.ofEntries(entry(CORE_APP_LISTEN_PORT_VAR, listenPort),
+                         entry(CORE_APP_MANAGEMENT_PORT_VAR, healthCheckPort),
                          entry(ENVIRONMENT_NAME, environmentName),
                          entry(SPRING_PROFILES_ACTIVE, springProfile),
                          entry(AWS_REGION, awsRegion),
