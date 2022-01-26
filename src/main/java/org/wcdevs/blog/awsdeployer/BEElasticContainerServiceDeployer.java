@@ -32,7 +32,7 @@ public class BEElasticContainerServiceDeployer {
   private static final String CORE_APP_MANAGEMENT_PORT_VAR = "MANAGEMENT_SERVER_PORT";
 
   private static final String ENVIRONMENT_NAME = "ENVIRONMENT_NAME";
-  private static final String SPRING_PROFILES_ACTIVE = "SPRING_PROFILES_ACTIVE";
+  private static final String SPRING_PROFILES = "SPRING_PROFILES_INCLUDE";
   private static final String AWS_REGION = "AWS_REGION";
   private static final String ALLOWED_ORIGINS = "ALLOWED_ORIGINS";
 
@@ -112,7 +112,7 @@ public class BEElasticContainerServiceDeployer {
     return Map.ofEntries(entry(CORE_APP_LISTEN_PORT_VAR, listenPort),
                          entry(CORE_APP_MANAGEMENT_PORT_VAR, healthCheckPort),
                          entry(ENVIRONMENT_NAME, environmentName),
-                         entry(SPRING_PROFILES_ACTIVE, springProfile),
+                         entry(SPRING_PROFILES, springProfile),
                          entry(AWS_REGION, awsRegion),
                          entry(ALLOWED_ORIGINS, allowedOrigins));
   }
