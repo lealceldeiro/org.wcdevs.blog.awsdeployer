@@ -22,10 +22,10 @@ import static java.util.Map.entry;
 public class BEElasticContainerServiceDeployer {
   private static final String CONSTRUCT_NAME = "BEECServiceApp";
 
-  private static final String CORE_APP_DB_URL = "CORE_APP_DB_URL";
-  private static final String CORE_APP_DB_USER = "CORE_APP_DB_USER";
-  private static final String CORE_APP_DB_PASSWORD = "CORE_APP_DB_PASSWORD";
-  private static final String CORE_APP_DB_DRIVER = "CORE_APP_DB_DRIVER";
+  private static final String CORE_APP_DB_URL_VAR = "SPRING_DATASOURCE_URL";
+  private static final String CORE_APP_DB_USER_VAR = "SPRING_DATASOURCE_USERNAME";
+  private static final String CORE_APP_DB_PASSWORD_VAR = "SPRING_DATASOURCE_PASSWORD";
+  private static final String CORE_APP_DB_DRIVER_VAR = "SPRING_DATASOURCE_DRIVERCLASSNAME";
   private static final String CORE_APP_DB_DRIVER_POSTGRES = "org.postgresql.Driver";
 
   private static final String CORE_APP_LISTEN_PORT = "CORE_APP_LISTEN_PORT";
@@ -129,10 +129,10 @@ public class BEElasticContainerServiceDeployer {
     var dbUsername = dbSecret.secretValueFromJson(Database.USERNAME_SECRET_HOLDER).toString();
     var dbPassword = dbSecret.secretValueFromJson(Database.PASSWORD_SECRET_HOLDER).toString();
 
-    return Map.ofEntries(entry(CORE_APP_DB_DRIVER, CORE_APP_DB_DRIVER_POSTGRES),
-                         entry(CORE_APP_DB_URL, springDataSourceUrl),
-                         entry(CORE_APP_DB_USER, dbUsername),
-                         entry(CORE_APP_DB_PASSWORD, dbPassword));
+    return Map.ofEntries(entry(CORE_APP_DB_DRIVER_VAR, CORE_APP_DB_DRIVER_POSTGRES),
+                         entry(CORE_APP_DB_URL_VAR, springDataSourceUrl),
+                         entry(CORE_APP_DB_USER_VAR, dbUsername),
+                         entry(CORE_APP_DB_PASSWORD_VAR, dbPassword));
   }
 
   private static ElasticContainerService.DockerImage dockerImage(String dockerRepositoryName,
