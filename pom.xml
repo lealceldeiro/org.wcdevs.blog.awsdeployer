@@ -11,95 +11,23 @@
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <cdk.version>1.146.0</cdk.version>
     <passay.version>1.6.1</passay.version>
-    <cdk-constructs.version>2.1.9</cdk-constructs.version>
+    <awscdk.version>2.17.0</awscdk.version>
+    <awsconstructs.version>10.0.95</awsconstructs.version>
+    <cdk-constructs.version>2.1.10</cdk-constructs.version>
   </properties>
 
   <dependencies>
     <!-- region AWS Cloud Development Kit -->
     <dependency>
       <groupId>software.amazon.awscdk</groupId>
-      <artifactId>core</artifactId>
-      <version>${cdk.version}</version>
+      <artifactId>aws-cdk-lib</artifactId>
+      <version>${awscdk.version}</version>
     </dependency>
-
     <dependency>
-      <groupId>software.amazon.awscdk</groupId>
-      <artifactId>ec2</artifactId>
-      <version>${cdk.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>software.amazon.awscdk</groupId>
-      <artifactId>cognito</artifactId>
-      <version>${cdk.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>software.amazon.awscdk</groupId>
-      <artifactId>lambda-event-sources</artifactId>
-      <version>${cdk.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>software.amazon.awscdk</groupId>
-      <artifactId>events-targets</artifactId>
-      <version>${cdk.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>software.amazon.awscdk</groupId>
-      <artifactId>secretsmanager</artifactId>
-      <version>${cdk.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>software.amazon.awscdk</groupId>
-      <artifactId>amazonmq</artifactId>
-      <version>${cdk.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>software.amazon.awscdk</groupId>
-      <artifactId>cloudwatch</artifactId>
-      <version>${cdk.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>software.amazon.awscdk</groupId>
-      <artifactId>cloudwatch-actions</artifactId>
-      <version>${cdk.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>software.amazon.awscdk</groupId>
-      <artifactId>synthetics</artifactId>
-      <version>${cdk.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>software.amazon.awscdk</groupId>
-      <artifactId>route53</artifactId>
-      <version>${cdk.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>software.amazon.awscdk</groupId>
-      <artifactId>route53-targets</artifactId>
-      <version>${cdk.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>software.amazon.awscdk</groupId>
-      <artifactId>elasticloadbalancingv2</artifactId>
-      <version>${cdk.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>software.amazon.awscdk</groupId>
-      <artifactId>certificatemanager</artifactId>
-      <version>${cdk.version}</version>
+      <groupId>software.constructs</groupId>
+      <artifactId>constructs</artifactId>
+      <version>${awsconstructs.version}</version>
     </dependency>
     <!--endregion-->
 

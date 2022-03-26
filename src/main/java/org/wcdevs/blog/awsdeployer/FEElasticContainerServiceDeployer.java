@@ -5,10 +5,10 @@ import org.wcdevs.blog.cdk.CognitoStack;
 import org.wcdevs.blog.cdk.ElasticContainerService;
 import org.wcdevs.blog.cdk.Network;
 import org.wcdevs.blog.cdk.Util;
-import software.amazon.awscdk.core.App;
-import software.amazon.awscdk.core.Environment;
-import software.amazon.awscdk.core.Stack;
-import software.amazon.awscdk.core.StackProps;
+import software.amazon.awscdk.App;
+import software.amazon.awscdk.Environment;
+import software.amazon.awscdk.Stack;
+import software.amazon.awscdk.StackProps;
 import software.amazon.awscdk.services.iam.Effect;
 import software.amazon.awscdk.services.iam.PolicyStatement;
 
