@@ -3,7 +3,7 @@ package org.wcdevs.blog.awsdeployer;
 import org.wcdevs.blog.cdk.ApplicationEnvironment;
 import org.wcdevs.blog.cdk.DomainStack;
 import org.wcdevs.blog.cdk.Util;
-import software.amazon.awscdk.core.App;
+import software.amazon.awscdk.App;
 
 public class DomainDeployer {
   private static final String CONSTRUCT_NAME = "DomainApp";

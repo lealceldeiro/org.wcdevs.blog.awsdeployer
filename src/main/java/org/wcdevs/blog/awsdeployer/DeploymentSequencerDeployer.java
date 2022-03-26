@@ -3,7 +3,7 @@ package org.wcdevs.blog.awsdeployer;
 import org.wcdevs.blog.cdk.ApplicationEnvironment;
 import org.wcdevs.blog.cdk.DeploymentSequencerStack;
 import org.wcdevs.blog.cdk.Util;
-import software.amazon.awscdk.core.App;
+import software.amazon.awscdk.App;
 
 public class DeploymentSequencerDeployer {
   public static void main(String[] args) {

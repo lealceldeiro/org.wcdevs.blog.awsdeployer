@@ -3,9 +3,9 @@ package org.wcdevs.blog.awsdeployer;
 import org.wcdevs.blog.cdk.ApplicationEnvironment;
 import org.wcdevs.blog.cdk.Network;
 import org.wcdevs.blog.cdk.Util;
-import software.amazon.awscdk.core.App;
-import software.amazon.awscdk.core.Stack;
-import software.amazon.awscdk.core.StackProps;
+import software.amazon.awscdk.App;
+import software.amazon.awscdk.Stack;
+import software.amazon.awscdk.StackProps;
 
 public class NetworkDeployer {
   private static final String CONSTRUCT_NAME = "network-stack";
