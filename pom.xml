@@ -12,9 +12,9 @@
     <maven.compiler.target>11</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <passay.version>1.6.1</passay.version>
-    <awscdk.version>2.17.0</awscdk.version>
-    <awsconstructs.version>10.0.95</awsconstructs.version>
-    <cdk-constructs.version>2.1.10</cdk-constructs.version>
+    <awscdk.version>2.18.0</awscdk.version>
+    <awsconstructs.version>10.0.101</awsconstructs.version>
+    <cdk-constructs.version>2.1.11</cdk-constructs.version>
   </properties>
 
   <dependencies>
