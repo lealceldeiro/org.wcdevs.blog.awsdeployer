@@ -32,6 +32,10 @@ jobs:
 
       - name: Install CDK
         run: |
+          echo "Node version:"
+          node -v
+          echo "npm version:"
+          npm -v
           npm i -g aws-cdk
           echo "CKD version:"
           cdk version
