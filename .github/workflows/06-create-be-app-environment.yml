@@ -40,7 +40,7 @@ jobs:
           echo "npm version:"
           npm -v
           npm i -g aws-cdk
-          echo "CKD version:"
+          echo "CDK version:"
           cdk version
 
       - name: NPM install
