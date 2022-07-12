@@ -13,9 +13,9 @@
     <maven.compiler.release>17</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <passay.version>1.6.1</passay.version>
-    <awscdk.version>2.24.0</awscdk.version>
-    <awsconstructs.version>10.1.7</awsconstructs.version>
-    <cdk-constructs.version>3.0.0</cdk-constructs.version>
+    <awscdk.version>2.31.1</awscdk.version>
+    <awsconstructs.version>10.1.43</awsconstructs.version>
+    <cdk-constructs.version>3.0.1</cdk-constructs.version>
   </properties>
 
   <dependencies>
