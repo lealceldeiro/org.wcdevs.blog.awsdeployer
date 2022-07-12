@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "private": true,
   "devDependencies": {
-    "aws-cdk": "2.25.0"
+    "aws-cdk": "2.31.1"
   },
   "scripts": {
     "bootstrap": "cdk bootstrap aws://${AWS_ACCOUNT_ID}/${AWS_DEFAULT_REGION} --app \"./mvnw -e -q compile exec:java -Dexec.mainClass=org.wcdevs.blog.awsdeployer.Bootstrapper\"",
