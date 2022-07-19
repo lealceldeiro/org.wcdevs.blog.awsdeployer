@@ -2,11 +2,7 @@ package org.wcdevs.blog.awsdeployer;
 
 import org.wcdevs.blog.cdk.ApplicationEnvironment;
 import org.wcdevs.blog.cdk.CognitoStack;
-import org.wcdevs.blog.cdk.Util;
-import software.amazon.awscdk.App;
-import software.amazon.awscdk.Environment;
 import software.amazon.awscdk.Stack;
-import software.amazon.awscdk.StackProps;
 
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -19,9 +15,6 @@ public final class EnvVarsUtil {
   private static final String COGNITO_CLIENT_ID = "COGNITO_CLIENT_ID";
   private static final String COGNITO_CLIENT_NAME = "COGNITO_CLIENT_NAME";
   private static final String COGNITO_CLIENT_SECRET = "COGNITO_CLIENT_SECRET";
-  private static final String COGNITO_SCOPES = "COGNITO_SCOPES";
-
-  private static final String PARAMETERS_STACK = "parameters";
 
   private EnvVarsUtil() {
 
@@ -29,12 +22,6 @@ public final class EnvVarsUtil {
 
   static Map<String, String> cognitoEnvVars(Stack scope, ApplicationEnvironment appEnv,
                                             CognitoStack.OutputParameters cognitoParams) {
-    return cognitoEnvVars(scope, appEnv, cognitoParams, "");
-  }
-
-  static Map<String, String> cognitoEnvVars(Stack scope, ApplicationEnvironment appEnv,
-                                            CognitoStack.OutputParameters cognitoParams,
-                                            String scopes) {
     var cognitoClientSecret = CognitoStack.getUserPoolClientSecret(scope, appEnv);
     var cognitoClientSecretValue
         = cognitoClientSecret.secretValueFromJson(CognitoStack.USER_POOL_CLIENT_SECRET_HOLDER)
@@ -49,8 +36,7 @@ public final class EnvVarsUtil {
     return Map.ofEntries(entry(COGNITO_PROVIDER_URL, cognitoParams.getProviderUrl()),
                          entry(COGNITO_CLIENT_ID, cognitoClientId),
                          entry(COGNITO_CLIENT_NAME, cognitoClientName),
-                         entry(COGNITO_CLIENT_SECRET, cognitoClientSecretValue),
-                         entry(COGNITO_SCOPES, scopes));
+                         entry(COGNITO_CLIENT_SECRET, cognitoClientSecretValue));
   }
 
   static Map<String, String> environmentVariables(Map<String, String> commonEnvVar,
@@ -67,18 +53,5 @@ public final class EnvVarsUtil {
     return Stream.concat(commonEnvVar.entrySet().stream(),
                          cognitoEnvVar.entrySet().stream())
                  .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-  }
-
-  static Stack parametersStack(App app, String stackId, ApplicationEnvironment applicationEnvironment,
-                               Environment awsEnvironment) {
-    var timeId = System.currentTimeMillis();
-    var pStackName = Util.joinedString(Util.DASH_JOINER, PARAMETERS_STACK, stackId, timeId);
-    var prefixedParamsStackName = applicationEnvironment.prefixed(pStackName);
-
-    return new Stack(app, prefixedParamsStackName,
-                     StackProps.builder()
-                               .stackName(prefixedParamsStackName)
-                               .env(awsEnvironment)
-                               .build());
   }
 }
