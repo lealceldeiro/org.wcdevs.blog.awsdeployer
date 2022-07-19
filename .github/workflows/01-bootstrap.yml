@@ -1,6 +1,6 @@
 # Triggered once.
 
-name: 00 - Bootstrap the AWS CDK
+name: 01 - Bootstrap the AWS CDK
 
 on:
   workflow_dispatch:
