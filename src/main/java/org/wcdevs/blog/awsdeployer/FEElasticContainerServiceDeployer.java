@@ -41,8 +41,7 @@ public class FEElasticContainerServiceDeployer {
     var appEnv = new ApplicationEnvironment(applicationName, environmentName);
 
     var serviceStack = serviceStack(app, appEnv, awsEnvironment);
-    var parametersStack = EnvVarsUtil.parametersStack(app, SERVICE_STACK_NAME, appEnv,
-                                                      awsEnvironment);
+    var parametersStack = parametersStack(app, appEnv, awsEnvironment);
 
     var networkOutputParameters = Network.outputParametersFrom(serviceStack, appEnv);
     var cognitoParams = CognitoStack.getOutputParameters(parametersStack, environmentName);
@@ -69,6 +68,19 @@ public class FEElasticContainerServiceDeployer {
                                                       .stackName(serviceStackName)
                                                       .env(awsEnvironment)
                                                       .build());
+  }
+
+  static Stack parametersStack(App app, ApplicationEnvironment applicationEnvironment,
+                               Environment awsEnvironment) {
+    var timeId = System.currentTimeMillis();
+    var pStackName = Util.joinedString(Util.DASH_JOINER, "parameters", SERVICE_STACK_NAME, timeId);
+    var prefixedParamsStackName = applicationEnvironment.prefixed(pStackName);
+
+    return new Stack(app, prefixedParamsStackName,
+                     StackProps.builder()
+                               .stackName(prefixedParamsStackName)
+                               .env(awsEnvironment)
+                               .build());
   }
 
   private static Map<String, String> commonEnvVars(String environmentName, String appListenPort,
