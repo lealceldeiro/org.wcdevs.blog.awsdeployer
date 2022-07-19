@@ -15,12 +15,6 @@
     "cognito:destroy": "cdk destroy --app \"./mvnw -e -q compile exec:java -Dexec.mainClass=org.wcdevs.blog.awsdeployer.CognitoDeployer\" --force --require-approval never",
     "database:deploy": "cdk deploy --app \"./mvnw -e -q compile exec:java -Dexec.mainClass=org.wcdevs.blog.awsdeployer.DatabaseDeployer\" --require-approval never",
     "database:destroy": "cdk destroy --app \"./mvnw -e -q compile exec:java -Dexec.mainClass=org.wcdevs.blog.awsdeployer.DatabaseDeployer\" --force --require-approval never",
-    "service:deploy:be": "cdk deploy --app \"./mvnw -e -q compile exec:java -Dexec.mainClass=org.wcdevs.blog.awsdeployer.BEElasticContainerServiceDeployer\" -c healthCheckPath=/manage/health -c healthCheckPort=8082 --require-approval never --all",
-    "service:destroy:be": "cdk destroy --app \"./mvnw -e -q compile exec:java -Dexec.mainClass=org.wcdevs.blog.awsdeployer.BEElasticContainerServiceDeployer\" -c healthCheckPath=/manage/health -c healthCheckPort=8082 --force --require-approval never --all",
-    "service:deploy:fe": "cdk deploy --app \"./mvnw -e -q compile exec:java -Dexec.mainClass=org.wcdevs.blog.awsdeployer.FEElasticContainerServiceDeployer\" --require-approval never --all",
-    "service:destroy:fe": "cdk destroy --app \"./mvnw -e -q compile exec:java -Dexec.mainClass=org.wcdevs.blog.awsdeployer.FEElasticContainerServiceDeployer\" --force --require-approval never --all",
-    "deployment-sequencer:deploy": "cdk deploy \"*\" --app \"./mvnw -e -q compile exec:java -Dexec.mainClass=org.wcdevs.blog.awsdeployer.DeploymentSequencerDeployer\" --require-approval never",
-    "deployment-sequencer:destroy": "cdk destroy \"*\" --app \"./mvnw -e -q compile exec:java -Dexec.mainClass=org.wcdevs.blog.awsdeployer.DeploymentSequencerDeployer\" --require-approval never",
     "domain:deploy": "cdk deploy --app \"./mvnw -e -q compile exec:java -Dexec.mainClass=org.wcdevs.blog.awsdeployer.DomainDeployer\" --require-approval never",
     "domain:destroy": "cdk destroy --app \"./mvnw -e -q compile exec:java -Dexec.mainClass=org.wcdevs.blog.awsdeployer.DomainDeployer\" --force --require-approval never"
   }
